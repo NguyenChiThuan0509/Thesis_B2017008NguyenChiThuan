@@ -1,91 +1,97 @@
 version: "3.1"
 
 nlu:
-- intent: greet
-  examples: |
-    - hey
-    - hello
-    - hi
-    - hello there
-    - good morning
-    - good evening
-    - moin
-    - hey there
-    - let's go
-    - hey dude
-    - goodmorning
-    - goodevening
-    - good afternoon
+  - intent: greet
+    examples: |
+      - hi
+      - hey
+      - chào
+      - hello
+      - xin chào
+      - chào bạn
+      - good morning
+      - good afternoon
+      - good evening
+      - có ai ở đây không?
+      - mình có vài câu hỏi
+      - có ai giúp mình không?
 
-- intent: goodbye
-  examples: |
-    - cu
-    - good by
-    - cee you later
-    - good night
-    - bye
-    - goodbye
-    - have a nice day
-    - see you around
-    - bye bye
-    - see you later
+  - intent: goodbye
+    examples: |
+      - bye
+      - tạm biệt
+      - chào tạm biệt
 
-- intent: affirm
-  examples: |
-    - yes
-    - y
-    - indeed
-    - of course
-    - that sounds good
-    - correct
+  - intent: feedback
+    examples: |
+      - hay
+      - tuyệt
+      - thanks
+      - thank you
+      - cảm ơn
+      - cảm ơn nhiều
 
-- intent: deny
-  examples: |
-    - no
-    - n
-    - never
-    - I don't think so
-    - don't like that
-    - no way
-    - not really
+  - intent: deny
+    examples: |
+      - no
+      - sai
+      - sai rồi
+      - không
+      - không phải
 
-- intent: mood_great
-  examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
+  - intent: ask_func
+    examples: |
+      - bạn làm được những gì?
+      - bạn có thể làm được những gì?
+      - bạn giúp được gì nào?
+      - chức năng của bạn là gì?
+      - bạn có thể làm được mấy chức năng?
+      - việc gì bạn làm được?
+      - kể xem bạn làm được gì?
+      - cho tôi biết bạn làm được những gì?
+      - bạn hữu dụng như thế nào?
+      - kể cho tôi biết những việc bạn có thể làm được?
 
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
+  - intent: ask_class_infor # hỏi thông tin lớp
+    examples: |
+      - Có bao nhiêu lớp học?
+      - Có những lớp nào được mở?
+      - Một lớp có bao nhiêu người?
 
-- intent: bot_challenge
-  examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+  - intent: ask_school_schedule # hỏi lịch học
+    examples: |
+      - Lịch học lớp [NC43](class_name) là khi nào?
+      - Lớp [NC43](class_name) đã kết thúc chưa?
+      - Lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name) khi nào khai giảng?
+      - Khi nào thì lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](class_name) bắt đầu?
+      - Khi nào có lịch học của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name)?
+
+  - intent: ask_exam_schedule # hỏi lịch thi
+    examples: |
+      - Lịch thi của lớp [NC43](class_name)?
+      - Lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](class_name) khi nào bắt đầu thi?
+      - Khi nào có lịch thi của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name)?
+
+  - intent: ask_tuition # hỏi học phí
+    examples: |
+      - Học phí của lớp Học và thi [Chứng chỉ Ứng dụng CNTT cơ bản](class_name) là bao nhiêu?
+      - Học phí của lớp Học và thi [CB493](class_name) là bao nhiêu?
+
+  - intent: ask_teacher_infor # hỏi thông tin giáo viên
+    examples: |
+      - Giáo viên dạy lớp [NC43](class_name) là ai?
+      - Ai là [giảng viên](teacher_name) của lớp [CB493](class_name)?
+
+  - intent: ask_address_class # hỏi địa chỉ phòng học
+    examples: |
+      - Lớp lớp [NC43](class_name) học ở đâu vậy?
+      - Chỗ để học lớp [NC43](class_name) là ở đâu?
+      - Địa điểm của lớp [NC43](class_name) ở đâu?
+
+  - intent: bot_challenge
+    examples: |
+      - bạn là bot phải không?
+      - bạn là bot hay là người?
+      - bạn là người phải không?
+      - tôi đang nói chuyện với bot phải không?
+      - tôi đang nói chuyện với người phải không?
