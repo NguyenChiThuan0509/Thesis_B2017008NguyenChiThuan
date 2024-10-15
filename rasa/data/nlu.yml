@@ -18,6 +18,7 @@ nlu:
 
   - intent: goodbye
     examples: |
+      - pp
       - bye
       - tạm biệt
       - chào tạm biệt
@@ -39,7 +40,7 @@ nlu:
       - không
       - không phải
 
-  - intent: ask_func
+  - intent: ask_func # hỏi chức năng
     examples: |
       - bạn làm được những gì?
       - bạn có thể làm được những gì?
@@ -52,11 +53,25 @@ nlu:
       - bạn hữu dụng như thế nào?
       - kể cho tôi biết những việc bạn có thể làm được?
 
+  - intent: my_name_and_class
+    examples: |
+      - Tên của tôi là [Nguyễn Chí Thuận](student_name) ,lớp của tôi là [CB522](class_name)
+      - [Nguyễn Chí Thuận](student_name) và [CB522](class_name)
+      - [Nguyễn Chí Thuận](student_name) là tên của tôi, còn [CB522](class_name) là tên lớp của tôi
+
   - intent: ask_class_infor # hỏi thông tin lớp
     examples: |
       - Có bao nhiêu lớp học?
       - Có những lớp nào được mở?
-      - Một lớp có bao nhiêu người?
+      - Có những khóa nào đang được mở?
+      - Có những lớp chứng chỉ nào?
+
+  - intent: ask_number_of_students # hỏi số lượng học sinh của lớp học
+    examples: |
+      - Lớp [CB522](class_name) có bao nhiêu học sinh?
+      - Lớp [CB522](class_name) có bao nhiêu người?
+      - Cho tôi biết số lượng học sinh trong lớp [CB403](class_name)?
+      - Hãy cho tôi biết số học sinh trong lớp [CB522](class_name)?
 
   - intent: ask_school_schedule # hỏi lịch học
     examples: |
@@ -76,6 +91,7 @@ nlu:
     examples: |
       - Học phí của lớp Học và thi [Chứng chỉ Ứng dụng CNTT cơ bản](class_name) là bao nhiêu?
       - Học phí của lớp Học và thi [CB493](class_name) là bao nhiêu?
+      - Học phí của tôi là bao nhiêu nếu học lớp [CB493](class_name)?
 
   - intent: ask_teacher_infor # hỏi thông tin giáo viên
     examples: |
@@ -84,9 +100,37 @@ nlu:
 
   - intent: ask_address_class # hỏi địa chỉ phòng học
     examples: |
-      - Lớp lớp [NC43](class_name) học ở đâu vậy?
+      - lớp [NC43](class_name) học ở đâu vậy?
       - Chỗ để học lớp [NC43](class_name) là ở đâu?
       - Địa điểm của lớp [NC43](class_name) ở đâu?
+
+  - intent: chieu_sinh #chiêu sinh
+    examples: |
+      - Sắp tới có khai giảng các lớp học nào?
+      - Trung tâm sắp chiêu sinh như thế nào?
+      - Có khóa học mới không?
+      - Trung tâm có mở thêm những lớp chứng chỉ nào không?
+
+  - intent: test_scores # tra cứu kết quả thi
+    examples: |
+      - Kết quả thi lớp [CB217](class_name) của tôi như thế nào?
+      - Tôi muốn tra cứu kết quả thi lớp [CB217](class_name) của tôi
+      - Tôi học lớp [CB217](class_name), điểm thi của tôi như thế nào?
+
+  - intent: search_degrees # tra cứu văn bằng
+    examples: |
+      - [Chứng chi tiếng Anh trình độ A](degree_name) của tôi xem bằng cách nào?
+      - Tôi muốn tra cứu thông tin [Chứng chi tiếng Anh trình độ A](degree_name) của tôi
+
+  - intent: contact
+    examples: |
+      - Địa chỉ của trung tâm ở đâu?
+      - Trung tâm có địa chỉ ở đâu?
+      - Tôi có thể liên hệ với trung tâm bằng cách nào?
+      - Số điện thoại của trung tâm là gì?
+      - Email của trung tâm là gì?
+      - Để liên hệ với trung tâm, tôi phải làm gì?
+      - Tôi phải làm gì để có thể liên hệ được với trung tâm?
 
   - intent: bot_challenge
     examples: |

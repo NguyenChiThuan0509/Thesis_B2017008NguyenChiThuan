@@ -13,14 +13,22 @@ intents:
   - ask_exam_schedule
   - ask_teacher_infor
   - ask_address_class
+  - ask_number_of_students
+  - chieu_sinh
+  - my_name_and_class
+  - test_scores
+  - search_degrees
+  - contact
 
 entities:
   - class_name
   - teacher_name
+  - student_name
 
 slots:
   class_name:
     type: text
+    influence_conversation: false
     mappings:
       - type: from_text
 
@@ -29,7 +37,12 @@ slots:
     mappings:
       - type: from_text
 
-responses:
+  student_name:
+    type: text
+    mappings:
+      - type: from_text
+
+responses: # trả lời mặt định ~ tĩnh
   utter_greet:
     - text: "Xin chào, tôi có thể giúp gì cho bạn?"
 
@@ -40,18 +53,40 @@ responses:
     - text: "Tạm biệt, hẹn gặp lại lần sau."
 
   utter_iamabot:
-    - text: "Tôi là bot, được cung cấp bởi Rasa và được huấn luyện để trả lời những thắc mắc đối với trung tâm điện tử & tin học."
+    - text: "Tôi là bot, được tạo ra để trả lời các câu hỏi của bạn."
+
+  utter_what_name_and_class:
+    - text: "Bạn có thể xác nhận lại cho tôi biết là bạn tên gì và học lớp nào không? Việc này có thể giúp tìm kiếm kết quả nhanh hơn đó."
+
+  utter_contact:
+    - text: "Địa chỉ: Số 01 Lý Tự Trọng, Q. Ninh Kiều, Tp. Cần Thơ, Việt Nam\n\nĐiện thoại: 84 0292 3735 898 - 0982 88 90 90\n\nEmail: webmaster@cit.ctu.edu.vn"
 
   utter_func:
-    - text: "Tôi có thể: 1.  2.  3. "
+    - text: "Tôi có thể hướng dẫn: "
+      buttons:
+        - title: "Đăng ký lớp học"
+          payload: "/regis_class"
+        - title: "Tra cứu kết quả thi"
+          payload: "/search_results"
+        - title: "Tra cứu văn bằng"
+          payload: "/search_degrees"
+        - title: "Tra cứu lịch thi"
+          payload: "/ask_exam_schedule"
+        - title: "Tra cứu thông tin lớp"
+          payload: "/ask_class_infor"
 
-actions:
-  - action_get_school_schedule
-  - action_get_class_infor
-  - action_get_exam_schedule
-  - action_get_tuition
-  - action_get_teacher_infor
-  - action_get_address_class
+actions: # trả lời động
+  - action_ask_school_schedule
+  - action_ask_class_infor
+  - action_ask_exam_schedule
+  - action_ask_tuition
+  - action_ask_teacher_infor
+  - action_ask_address_class
+  - action_search_degrees
+  - action_query_database
+  - action_count_students
+  - action_chieu_sinh
+  - action_test_scores
 
 session_config:
   session_expiration_time: 60

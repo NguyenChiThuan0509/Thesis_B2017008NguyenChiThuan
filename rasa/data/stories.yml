@@ -16,29 +16,56 @@ stories:
   - story: ask school schedule
     steps:
       - intent: ask_school_schedule
-      - action: action_get_school_schedule
+      - action: action_ask_school_schedule
 
   - story: ask exam schedule
     steps:
       - intent: ask_exam_schedule
-      - action: action_get_exam_schedule
+      - action: action_ask_exam_schedule
 
   - story: ask tuition
     steps:
       - intent: ask_tuition
-      - action: action_get_tuition
+      - action: action_ask_tuition
 
   - story: ask teachers information
     steps:
       - intent: ask_teacher_infor
-      - action: action_get_teacher_infor
+      - action: action_ask_teacher_infor
 
   - story: ask address class
     steps:
       - intent: ask_address_class
-      - action: action_get_address_class
+      - action: action_ask_address_class
 
   - story: ask class information
     steps:
       - intent: ask_class_infor
-      - action: action_get_class_infor
+      - action: action_ask_class_infor
+
+  - story: ask number of students
+    steps:
+      - intent: ask_number_of_students
+      - action: action_count_students
+
+  - story: chieu sinh
+    steps:
+      - intent: chieu_sinh
+      - action: action_chieu_sinh
+
+  - story: test scores
+    steps:
+      - intent: test_scores
+      - action: utter_what_name_and_class
+      - intent: my_name_and_class
+      - action: action_test_scores
+
+  - story: search degrees
+    steps:
+      - intent: search_degrees
+      - action: action_search_degrees
+
+  - story: contact
+    steps:
+      - intent: contact
+      - action: utter_contact
