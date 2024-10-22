@@ -26,7 +26,13 @@ stories:
   - story: ask tuition
     steps:
       - intent: ask_tuition
-      - action: action_ask_tuition
+      - action: utter_tuition
+      - action: action_tuition
+
+  - story: ask fees
+    steps:
+      - intent: ask_fees
+      - action: utter_fees
 
   - story: ask teachers information
     steps:
@@ -41,7 +47,7 @@ stories:
   - story: ask class information
     steps:
       - intent: ask_class_infor
-      - action: action_ask_class_infor
+      - action: utter_class
 
   - story: ask number of students
     steps:

@@ -92,6 +92,17 @@ nlu:
       - Học phí của lớp Học và thi [Chứng chỉ Ứng dụng CNTT cơ bản](class_name) là bao nhiêu?
       - Học phí của lớp Học và thi [CB493](class_name) là bao nhiêu?
       - Học phí của tôi là bao nhiêu nếu học lớp [CB493](class_name)?
+      - Có các loại học phí nào?
+      - Tôi phải đóng bao nhiêu tiền để có thể học được?
+      - Tôi có được miễn giảm học phí không?
+
+  - intent: ask_fees # hỏi lệ phí thi
+    examples: |
+      - Lệ phí thi của chứng chỉ ứng dụng công nghệ thông tin là bao nhiêu tiền?
+      - Tôi phải đóng bao nhiêu lệ phí thi?
+      - Có các loại lệ phí thi nào?
+      - Nếu tôi là học sinh tự do thì có phải đóng lệ phí thi không?
+      - Nếu tôi là học sinh, học viên ghi danh học hoặc ôn tập tại trung tâm thì có phải đóng lệ phí thi không?
 
   - intent: ask_teacher_infor # hỏi thông tin giáo viên
     examples: |

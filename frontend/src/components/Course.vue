@@ -1,11 +1,13 @@
 <template>
     <div class="courses-container">
+
         <div v-for="course in visibleCourses" :key="course.id" class="course-card">
-            <a href="#">
+            <router-link to="/incourse">
                 <div :class="course.bgClass" class="course-header">
-                    <h3>{{ course.title }}</h3>
+                    <img src="../assets/image/course_01.png" alt="khóa học">
                 </div>
                 <div class="course-content">
+                    <h2 class="course-title">{{ course.title }}</h2>
                     <p>{{ course.description }}</p>
                     <p class="course-price">{{ course.price }}</p>
                     <div class="course-details">
@@ -19,13 +21,20 @@
                         </div>
                     </div>
                 </div>
-            </a>
+            </router-link>
         </div>
+
     </div>
 </template>
 
 <script>
+// import InCourse from './InCourse.vue';
+
 export default {
+    // name: "Course",
+    // components: [
+    //     InCourse,
+    // ],
     data() {
         return {
             courses: [
@@ -83,7 +92,7 @@ export default {
     max-width: 300px;
     min-height: 200px;
     flex: 1 1 calc(25% - 16px);
-    background-color: #D2E0FB;
+    background-color: #F4F6FF;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
@@ -98,15 +107,27 @@ export default {
 }
 
 .course-header {
-    padding: 16px;
+    /* padding: 16px; */
     color: black;
     text-align: center;
     font-size: medium;
     font-weight: bolder;
 }
 
+.course-header img {
+    max-width: 100%;
+    object-fit: fill;
+}
+
 .course-content {
-    padding: 16px;
+    padding: 10px;
+}
+
+.course-title {
+    color: black;
+    font-size: 18px;
+    font-weight: bolder;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .course-price {

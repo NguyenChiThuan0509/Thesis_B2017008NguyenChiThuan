@@ -5,27 +5,6 @@
 # https://rasa.com/docs/rasa/custom-actions
 
 
-# This is a simple example for a custom action which utters "Hello World!"
-
-# from typing import Any, Text, Dict, List
-#
-# from rasa_sdk import Action, Tracker
-# from rasa_sdk.executor import CollectingDispatcher
-#
-#
-# class ActionHelloWorld(Action):
-#
-#     def name(self) -> Text:
-#         return "action_hello_world"
-#
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#
-#         dispatcher.utter_message(text="Hello World!")
-#
-#         return []
-
 # ---------------------------------------------------CUSTOM ACTION----------------------------------------------------------
 
 import mysql.connector
@@ -35,6 +14,93 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from datetime import datetime
 from mysql.connector import Error
+
+import mysql.connector
+
+def connect_to_database():
+    return mysql.connector.connect(
+        host='localhost',
+        user='root',  
+        password='P28LsJyK', 
+        database='luanvan' 
+    )
+
+
+class ActionTuition(Action):
+    def name(self) -> Text:
+        return "action_tuition"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        # Lấy thông tin từ tracker
+        user_message = tracker.latest_message.get('text')
+
+        # Kết nối tới cơ sở dữ liệu
+        db = connect_to_database()
+        cursor = db.cursor()
+
+        if user_message == "Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)":
+            cursor.execute("SELECT hoc_phi FROM hoc_phi WHERE ten_lop = 'Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)'")
+            result = cursor.fetchone()
+            response = f"Học phí của lớp 'Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)' là {result[0]} VND" if result else "Không tìm thấy thông tin."
+
+        elif user_message == "Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)":
+            cursor.execute("SELECT hoc_phi FROM hoc_phi WHERE ten_lop = 'Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)'")
+            result = cursor.fetchone()
+            response = f"Học phí của lớp 'Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)' là {result[0]} VND" if result else "Không tìm thấy thông tin."
+
+        elif user_message == "Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)":
+            cursor.execute("SELECT hoc_phi FROM hoc_phi WHERE ten_lop = 'Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)'")
+            result = cursor.fetchone()
+            response = f"Học phí của lớp 'Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)' là {result[0]} VND" if result else "Không tìm thấy thông tin."
+        
+        else:
+            response = "Xin lỗi, tôi không nhận diện được yêu cầu của bạn."
+
+        # Đóng kết nối
+        cursor.close()
+        db.close()
+
+        # Gửi phản hồi về cho người dùng
+        dispatcher.utter_message(text=response)
+        return []
+
+    
+    
+# Action xử lý truy xuất lệ phí thi
+class ActionFees(Action):
+    def name(self) -> Text:
+        return "action_fees"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        user_message = tracker.latest_message.get('text')
+        
+        if user_message == "Học viên ghi danh học hoặc ôn tập các lớp tại trung tâm":
+            response = "Không cần đóng thêm lệ phí thi."
+        
+        elif user_message == "Thí sinh tự do":
+            # Kết nối tới cơ sở dữ liệu
+            db = connect_to_database()
+            cursor = db.cursor()
+            cursor.execute("SELECT loai_le_phi, le_phi, FROM le_phi_thi")
+            results = cursor.fetchall()
+            response = "Lệ phí thi dành cho thí sinh tự do có các loại sau:\n"
+            for row in results:
+                response += f"{row[0]}: {row[1]} VND\n"
+            # Đóng kết nối
+            cursor.close()
+            db.close()
+        else:
+            response = "Xin lỗi, tôi không nhận diện được yêu cầu của bạn."
+
+        dispatcher.utter_message(text=response)
+        return []
+
 
 class ActionCountStudents(Action):
 
@@ -95,46 +161,6 @@ class ActionCountStudents(Action):
                 if connection.is_connected():
                     cursor.close()
                     connection.close()
-
-        return []
-    
-class ActionAskClassInfo(Action):
-
-    def name(self) -> Text:
-        return "action_ask_class_infor"
-
-    async def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        try:
-            connection = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='P28LsJyK',
-                database='luanvan'
-            )
-            cursor = connection.cursor()
-
-            # Lấy danh sách tất cả các lớp
-            cursor.execute("SHOW TABLES")
-            tables = cursor.fetchall()
-            
-            class_list = []
-            for (table,) in tables:
-                class_name = re.search(r'danh_sach_lop_(.*)', table)
-                if class_name:
-                    class_list.append(class_name.group(1))
-            
-            if class_list:
-                dispatcher.utter_message(text=f"Các lớp học hiện có: {', '.join(class_list)}.")
-            else:
-                dispatcher.utter_message(text="Xin lỗi, không có lớp học nào được mở.")
-
-        except mysql.connector.Error as err:
-            dispatcher.utter_message(text=f"Đã có lỗi xảy ra: {err}")
-        
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
 
         return []
 
@@ -207,46 +233,6 @@ class ActionAskExamSchedule(Action):
                 dispatcher.utter_message(text=f"Lịch thi của lớp {class_name} là: {result[0]}.")
             else:
                 dispatcher.utter_message(text="Xin lỗi, không tìm thấy lịch thi cho lớp này.")
-
-        except mysql.connector.Error as err:
-            dispatcher.utter_message(text=f"Đã có lỗi xảy ra: {err}")
-        
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
-
-        return []
-
-class ActionAskTuition(Action):
-
-    def name(self) -> Text:
-        return "action_ask_tuition"
-
-    async def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        class_name = tracker.get_slot("class_name")
-        if not class_name:
-            dispatcher.utter_message(text="Xin lỗi, tôi không biết lớp nào bạn đang hỏi.")
-            return []
-
-        try:
-            connection = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='P28LsJyK',
-                database='luanvan'
-            )
-            cursor = connection.cursor()
-
-            # Truy vấn học phí
-            query = f"SELECT tuition FROM {class_name} WHERE class_name = %s"
-            cursor.execute(query, (class_name,))
-            result = cursor.fetchone()
-
-            if result:
-                dispatcher.utter_message(text=f"Học phí của lớp {class_name} là: {result[0]}.")
-            else:
-                dispatcher.utter_message(text="Xin lỗi, không tìm thấy thông tin học phí cho lớp này.")
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text=f"Đã có lỗi xảy ra: {err}")

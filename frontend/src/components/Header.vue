@@ -2,14 +2,16 @@
     <header class="header">
         <div class="container">
             <div class="left-section">
-                <div class="logo">
-                    <a href="#">
+                <router-link to="/">
+                    <div class="logo">
                         <img src="@/assets/logo/profile.png" alt="Logo" />
-                    </a>
-                </div>
-                <span class="name-web">
-                    <a href="#">Trung Tâm Điện Tử & Tin Học</a>
-                </span>
+                    </div>
+                </router-link>
+                <router-link to="/">
+                    <span class="name-web">
+                        Trung Tâm Điện Tử & Tin Học
+                    </span>
+                </router-link>
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="Tìm kiếm khóa học, bài viết, video, ..." />

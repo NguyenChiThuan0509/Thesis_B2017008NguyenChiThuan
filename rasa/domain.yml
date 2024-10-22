@@ -1,24 +1,25 @@
 version: "3.1"
 
 intents:
-  - greet
-  - goodbye
-  - feedback
-  - deny
   - ask_func
-  - bot_challenge
   - ask_tuition
   - ask_class_infor
-  - ask_school_schedule
-  - ask_exam_schedule
-  - ask_teacher_infor
   - ask_address_class
+  - ask_exam_schedule
+  - ask_fees
+  - ask_teacher_infor
+  - ask_school_schedule
   - ask_number_of_students
-  - chieu_sinh
-  - my_name_and_class
-  - test_scores
-  - search_degrees
+  - bot_challenge
   - contact
+  - chieu_sinh
+  - deny
+  - feedback
+  - greet
+  - goodbye
+  - my_name_and_class
+  - search_degrees
+  - test_scores
 
 entities:
   - class_name
@@ -61,6 +62,34 @@ responses: # trả lời mặt định ~ tĩnh
   utter_contact:
     - text: "Địa chỉ: Số 01 Lý Tự Trọng, Q. Ninh Kiều, Tp. Cần Thơ, Việt Nam\n\nĐiện thoại: 84 0292 3735 898 - 0982 88 90 90\n\nEmail: webmaster@cit.ctu.edu.vn"
 
+  utter_tuition:
+    - text: "Chọn loại học phí:"
+      buttons:
+        - title: "Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)"
+          payload: "Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)"
+        - title: "Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)"
+          payload: "Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)"
+        - title: "Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)"
+          payload: "Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)"
+
+  utter_fees:
+    - text: "Chọn đối tượng:"
+      buttons:
+        - title: "Học viên ghi danh học hoặc ôn tập các lớp tại trung tâm"
+          payload: "/action_fees"
+        - title: "Thí sinh tự do"
+          payload: "/action_fees"
+
+  utter_class:
+    - text: "Có các loại chứng chỉ như sau:"
+      buttons:
+        - title: "Chứng chỉ ứng dụng CNTT cơ bản"
+          payload: "/"
+        - title: "Chứng chỉ ứng dụng CNTT nâng cao"
+          payload: "/"
+        - title: "Lớp đào tạo ngắn hạn, chứng chỉ ngôn ngữ lập trình"
+          payload: "/"
+
   utter_func:
     - text: "Tôi có thể hướng dẫn: "
       buttons:
@@ -79,7 +108,6 @@ actions: # trả lời động
   - action_ask_school_schedule
   - action_ask_class_infor
   - action_ask_exam_schedule
-  - action_ask_tuition
   - action_ask_teacher_infor
   - action_ask_address_class
   - action_search_degrees
@@ -87,6 +115,8 @@ actions: # trả lời động
   - action_count_students
   - action_chieu_sinh
   - action_test_scores
+  - action_tuition
+  - action_fees
 
 session_config:
   session_expiration_time: 60
