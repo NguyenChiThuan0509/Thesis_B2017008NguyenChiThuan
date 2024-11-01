@@ -8,6 +8,8 @@ import Teacher from "../components/sidebars/Teacher.vue";
 import Contact from "../components/sidebars/Contact.vue";
 import InCourse from "../components/courses/InCourse.vue";
 import InAddStudent from "../components/sidebars/InAddStudent.vue";
+import AddClass from "../components/courses/AddClass.vue";
+import UpdateClass from "../components/courses/UpdateClass.vue";
 
 const routes = [
   { path: "/", component: MainContents },
@@ -17,6 +19,12 @@ const routes = [
   { path: "/searchdegree", component: SearchDegree },
   { path: "/teacher", component: Teacher },
   { path: "/contact", component: Contact },
+  { path: "/addclass", name: "AddClass", component: AddClass },
+  {
+    path: "/update-class/:id",
+    name: "UpdateClass",
+    component: UpdateClass,
+  },
   {
     path: "/incourse/:id",
     name: "InCourse",

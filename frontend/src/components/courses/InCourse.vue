@@ -26,7 +26,7 @@
 
             <div class="course-details">
                 <h3>Miễn phí</h3>
-                <button class="register-button">Đăng ký học</button>
+                <!-- <button class="register-button">Đăng ký học</button> -->
                 <ul class="details-list">
                     <li>Trình độ: {{ courseData.trinh_do }}</li>
                     <li>Số buổi: {{ courseData.so_buoi }}</li>
@@ -158,7 +158,7 @@ h2 {
     margin-bottom: 15px;
 }
 
-.register-button {
+/* .register-button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -170,7 +170,7 @@ h2 {
 
 .register-button:hover {
     background-color: #0056b3;
-}
+} */
 
 .details-list {
     padding: 0;

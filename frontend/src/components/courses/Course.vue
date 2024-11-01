@@ -1,4 +1,5 @@
 <template>
+    <button @click="goToAddClass" class="add-class-button">THÊM</button>
     <div class="courses-container">
         <div v-for="course in visibleCourses" :key="course.id" class="course-card">
             <router-link :to="{ name: 'InCourse', params: { id: course.id } }">
@@ -8,27 +9,27 @@
                 <div class="course-content">
                     <h2 class="course-title">{{ course.ten_lop_dao_tao }}</h2>
                     <p>{{ course.gioi_thieu }}</p>
-                    <p class="course-price">{{ course.price }}</p>
-                    <div class="course-details">
-                        <div class="detail">
-                            <i class="fa-solid fa-user"></i>
-                            <span>{{ course.participants }}</span>
-                        </div>
-                        <div class="detail">
-                            <i class="fas fa-clock"></i>
-                            <span>{{ course.date }}</span>
-                        </div>
-                    </div>
                 </div>
             </router-link>
+            <div class="course-actions">
+                <button @click="deleteCourse(course.id)">Xóa</button>
+                <button @click="editCourse(course.id)">Sửa</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+import AddClass from './AddClass.vue';
+import UpdateClass from './UpdateClass.vue';
 
 export default {
+    name: "Course",
+    components: {
+        AddClass,
+        UpdateClass
+    },
     data() {
         return {
             courses: [],
@@ -54,9 +55,6 @@ export default {
                 this.courses = response.data.map((course, index) => ({
                     ...course,
                     bgClass: this.getBgClass(index),
-                    price: "Miễn phí",
-                    participants: "Số lượng tham gia",
-                    date: "Ngày khai giảng",
                 }));
             } catch (error) {
                 console.error('Lỗi khi lấy danh sách khóa học:', error);
@@ -76,24 +74,56 @@ export default {
                 this.maxVisibleCourses = this.courses.length;
             }
         },
+        goToAddClass() {
+            this.$router.push({ name: 'AddClass' });
+        },
+        editCourse(courseId) {
+            this.$router.push({ name: 'UpdateClass', params: { id: courseId } });
+        },
+        async deleteCourse(courseId) {
+            if (confirm('Bạn có chắc chắn muốn xóa khóa học này?')) {
+                try {
+                    await axios.delete(`http://localhost:3000/api/courses/${courseId}`);
+                    this.fetchCourses(); // Cập nhật danh sách khóa học
+                } catch (error) {
+                    console.error('Lỗi khi xóa khóa học:', error);
+                }
+            }
+        },
     },
 };
 </script>
 
-
-
 <style scoped>
+.add-class-button {
+    max-width: 120px;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #08C2FF;
+    /* Màu xanh lá */
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.add-class-button:hover {
+    background-color: #006BFF;
+    /* Màu xanh lá đậm hơn khi hover */
+}
+
 .courses-container {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    /* justify-content: space-between; */
     margin-top: 10px;
     padding-bottom: 50px;
 }
 
 .course-card {
-    max-width: 300px;
+    max-width: calc(25% - 16px);
     min-height: 200px;
     flex: 1 1 calc(25% - 16px);
     background-color: #F5F5F5;
@@ -111,8 +141,6 @@ export default {
 }
 
 .course-header {
-    /* padding: 16px; */
-    color: black;
     text-align: center;
     font-size: medium;
     font-weight: bolder;
@@ -134,34 +162,55 @@ export default {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.course-price {
-    color: red;
-    font-weight: bold;
-}
-
-.course-details {
+.course-actions {
     display: flex;
     justify-content: space-between;
-    margin-top: 16px;
+    padding: 10px;
 }
 
-.detail {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.course-actions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-/* Khi màn hình nhỏ hơn 768px, mỗi hàng hiển thị 2 thẻ */
+/* Nút "Xóa" màu đỏ */
+.course-actions button:first-of-type {
+    background-color: #dc3545;
+    /* Màu đỏ */
+    color: white;
+}
+
+.course-actions button:first-of-type:hover {
+    background-color: #c82333;
+    /* Màu đỏ đậm hơn khi hover */
+}
+
+/* Nút "Sửa" màu vàng */
+.course-actions button:last-of-type {
+    background-color: #ffc107;
+    /* Màu vàng */
+    color: black;
+}
+
+.course-actions button:last-of-type:hover {
+    background-color: #e0a800;
+    /* Màu vàng đậm hơn khi hover */
+}
+
+/* Media queries */
 @media (max-width: 768px) {
     .course-card {
         flex: 1 1 calc(50% - 16px);
     }
 }
 
-/* Khi màn hình nhỏ hơn 480px, mỗi hàng hiển thị 1 thẻ */
 @media (max-width: 480px) {
     .course-card {
-        flex: 1 1 calc(50% - 16px);
+        flex: 1 1 calc(100% - 16px);
     }
 }
 </style>

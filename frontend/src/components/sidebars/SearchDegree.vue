@@ -78,6 +78,7 @@ export default {
     color: #666;
     font-size: 14px;
     margin-top: 10px;
+    text-align: center;
 }
 
 .buttons {

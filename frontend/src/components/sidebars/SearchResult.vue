@@ -17,20 +17,30 @@
             <div class="buttons">
                 <button type="button" class="btn btn-primary">Tìm kiếm</button>
                 <button type="button" class="btn btn-secondary">Nhập lại</button>
-                <button type="button" class="btn btn-danger">Xem hướng dẫn tra cứu</button>
+                <!-- <button type="button" class="btn btn-danger">Xem hướng dẫn tra cứu</button> -->
+                <button type="button" class="btn btn-danger" @click="showPopup = true">Xem hướng dẫn tra cứu</button>
             </div>
         </form>
+
+        <ExamGuidePopup v-if="showPopup" :show="showPopup" @close="showPopup = false" />
         <Footer />
     </div>
 </template>
 
 <script>
 import Footer from '../Footer.vue';
+import ExamGuidePopup from './ExamGuidePopup.vue';
 
 export default {
     name: "SearchResult",
     components: {
         Footer,
+        ExamGuidePopup
+    },
+    data() {
+        return {
+            showPopup: false
+        };
     }
 };
 </script>

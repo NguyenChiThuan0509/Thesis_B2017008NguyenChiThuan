@@ -11,6 +11,8 @@ app.use(
   })
 );
 
+app.use(express.json());
+
 // Kết nối database
 const db = mysql.createConnection({
   host: "localhost",
@@ -26,9 +28,9 @@ db.connect((err) => {
 
 // ----------------------------------------------------------------*----------------------------------------------------------------
 
-// Tạo route lấy dữ liệu từ bảng `danh_sach_lop_cb217`
-app.get("/api/danh-sach-lop-cb217", (req, res) => {
-  db.query("SELECT * FROM danh_sach_lop_cb217", (err, results) => {
+// Tạo route lấy dữ liệu từ bảng `GiaoVien`
+app.get("/api/danh-sach-giao-vien", (req, res) => {
+  db.query("SELECT * FROM GiaoVien", (err, results) => {
     if (err) throw err;
     res.json(results);
   });
@@ -86,6 +88,114 @@ app.get("/api/courses/:id", (req, res) => {
     }
   });
 });
+
+// --------------------------------Thêm, sửa, xóa lớp học--------------------------------
+// Thêm một lớp học mới
+app.post("/api/courses", (req, res) => {
+  const {
+    ten_lop_dao_tao,
+    gioi_thieu,
+    muc_tieu,
+    noi_dung,
+    trinh_do,
+    so_buoi,
+    so_tiet_ly_thuyet,
+    so_tiet_thuc_hanh,
+  } = req.body;
+  const query =
+    "INSERT INTO lop_dao_tao (ten_lop_dao_tao, gioi_thieu, muc_tieu, noi_dung, trinh_do, so_buoi, so_tiet_ly_thuyet, so_tiet_thuc_hanh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+  db.query(
+    query,
+    [
+      ten_lop_dao_tao,
+      gioi_thieu,
+      muc_tieu,
+      noi_dung,
+      trinh_do,
+      so_buoi,
+      so_tiet_ly_thuyet,
+      so_tiet_thuc_hanh,
+    ],
+    (err, results) => {
+      if (err) {
+        console.error("Lỗi khi thêm lớp học:", err);
+        res.status(500).send("Lỗi khi thêm lớp học vào cơ sở dữ liệu.");
+      } else {
+        res.status(201).json({
+          id: results.insertId,
+          ten_lop_dao_tao,
+          gioi_thieu,
+          muc_tieu,
+          noi_dung,
+          trinh_do,
+          so_buoi,
+          so_tiet_ly_thuyet,
+          so_tiet_thuc_hanh,
+        });
+      }
+    }
+  );
+});
+
+// Cập nhật thông tin lớp học
+app.put("/api/courses/:id", (req, res) => {
+  const courseId = parseInt(req.params.id);
+  const {
+    ten_lop_dao_tao,
+    gioi_thieu,
+    muc_tieu,
+    noi_dung,
+    trinh_do,
+    so_buoi,
+    so_tiet_ly_thuyet,
+    so_tiet_thuc_hanh,
+  } = req.body;
+
+  const query = `
+    UPDATE lop_dao_tao
+    SET ten_lop_dao_tao = ?, gioi_thieu = ?, muc_tieu = ?, noi_dung = ?, 
+        trinh_do = ?, so_buoi = ?, so_tiet_ly_thuyet = ?, so_tiet_thuc_hanh = ?
+    WHERE id = ?`;
+
+  db.query(
+    query,
+    [
+      ten_lop_dao_tao,
+      gioi_thieu,
+      muc_tieu,
+      noi_dung,
+      trinh_do,
+      so_buoi,
+      so_tiet_ly_thuyet,
+      so_tiet_thuc_hanh,
+      courseId,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Lỗi khi cập nhật lớp học:", err);
+        res.status(500).send("Lỗi khi cập nhật lớp học.");
+      } else {
+        res.status(200).send("Cập nhật lớp học thành công!");
+      }
+    }
+  );
+});
+
+// Xóa lớp học
+app.delete("/api/courses/:id", (req, res) => {
+  const courseId = parseInt(req.params.id);
+  const query = "DELETE FROM lop_dao_tao WHERE id = ?";
+
+  db.query(query, [courseId], (err) => {
+    if (err) {
+      console.error("Lỗi khi xóa lớp học:", err);
+      res.status(500).send("Lỗi khi xóa lớp học từ cơ sở dữ liệu.");
+    } else {
+      res.status(204).send(); // No Content
+    }
+  });
+});
+// ----------------------------------------------------------------
 
 // Tạo route lấy dữ liệu từ bảng `thong_bao_chieu_sinh`
 app.get("/api/thong-bao-chieu-sinh", (req, res) => {

@@ -14,13 +14,13 @@
                 </router-link>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Tìm kiếm khóa học, bài viết, video, ..." />
+                <input type="text" placeholder="Nhập từ khóa cần tìm kiếm..." />
                 <button>
                     <i class="fa-brands fa-searchengin"></i>
                 </button>
             </div>
             <div class="auth-buttons">
-                <button class="register-btn">Đăng ký</button>
+                <!-- <button class="register-btn">Đăng ký</button> -->
                 <button class="login-btn">Đăng nhập</button>
             </div>
         </div>

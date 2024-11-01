@@ -1,9 +1,10 @@
 <template>
     <div>
-        <h1>Danh sách lớp CB217</h1>
-        <ul v-if="students.length">
-            <li v-for="student in students" :key="student.mssv">
-                {{ student.ho_va_ten }} - {{ student.ngay_sinh }} - {{ student.noi_sinh }}
+        <h1>Danh sách giáo viên</h1>
+        <ul v-if="teacher.length">
+            <li v-for="teacher in teacher" :key="teacher.ma_so_can_bo">
+                {{ teacher.ten_giao_vien }} - {{ teacher.ma_so_can_bo }} - {{ teacher.gioi_tinh }} - {{ teacher.email }}
+                - {{ teacher.dien_thoai }}
             </li>
         </ul>
         <p v-else>Không có dữ liệu</p>
@@ -22,21 +23,21 @@ export default {
     },
     data() {
         return {
-            students: []
+            teacher: []
         };
     },
     methods: {
-        async fetchStudents() {
+        async fetchTeachers() {
             try {
-                const response = await axios.get('http://localhost:3000/api/danh-sach-lop-cb217');
-                this.students = response.data;
+                const response = await axios.get('http://localhost:3000/api/danh-sach-giao-vien');
+                this.teacher = response.data;
             } catch (error) {
                 console.error('Lỗi khi lấy dữ liệu:', error);
             }
         }
     },
     mounted() {
-        this.fetchStudents();
+        this.fetchTeachers();
     }
 };
 </script>
