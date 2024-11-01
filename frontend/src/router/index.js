@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainContents from "../components/MainContent.vue";
-import AddStudent from "../components/AddStudent.vue";
-import ExamSchedule from "../components/ExamSchedule.vue";
-import SearchResult from "../components/SearchResult.vue";
-import SearchDegree from "../components/SearchDegree.vue";
-import Teacher from "../components/Teacher.vue";
-import Contact from "../components/Contact.vue";
-import InCourse from "../components/InCourse.vue";
+import AddStudent from "../components/sidebars/AddStudent.vue";
+import ExamSchedule from "../components/sidebars/ExamSchedule.vue";
+import SearchResult from "../components/sidebars/SearchResult.vue";
+import SearchDegree from "../components/sidebars/SearchDegree.vue";
+import Teacher from "../components/sidebars/Teacher.vue";
+import Contact from "../components/sidebars/Contact.vue";
+import InCourse from "../components/courses/InCourse.vue";
+import InAddStudent from "../components/sidebars/InAddStudent.vue";
 
 const routes = [
   { path: "/", component: MainContents },
@@ -16,7 +17,17 @@ const routes = [
   { path: "/searchdegree", component: SearchDegree },
   { path: "/teacher", component: Teacher },
   { path: "/contact", component: Contact },
-  { path: "/incourse", component: InCourse },
+  {
+    path: "/incourse/:id",
+    name: "InCourse",
+    component: InCourse,
+  },
+  {
+    path: "/addstudent/:id",
+    name: "InAddStudent",
+    component: InAddStudent,
+    props: true,
+  },
 ];
 
 const router = createRouter({

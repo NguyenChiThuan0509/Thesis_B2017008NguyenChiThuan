@@ -114,7 +114,7 @@ export default {
 }
 
 .login-btn {
-    background-color: #E84545;
+    background-color: #133E87;
 }
 
 .register-btn,

@@ -8,7 +8,7 @@
 
         </div>
         <div class="topic">
-            <span>Lớp Đào Tạo</span>
+            <span>Lớp đào tạo</span>
         </div>
         <Course />
         <Footer />
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Course from "./Course.vue";
+import Course from "./courses/Course.vue";
 import Footer from "./Footer.vue";
 
 export default {

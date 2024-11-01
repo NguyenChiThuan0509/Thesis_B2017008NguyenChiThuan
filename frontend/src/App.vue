@@ -12,7 +12,7 @@
 
 <script>
 import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import SideBar from "@/components/sidebars/SideBar.vue";
 import MainContent from "@/components/MainContent.vue";
 
 export default {
