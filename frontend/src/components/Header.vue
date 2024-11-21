@@ -19,17 +19,36 @@
                     <i class="fa-brands fa-searchengin"></i>
                 </button>
             </div>
+            <router-link to="/profile" class="img-profile">
+                <img src="https://png.pngtree.com/png-clipart/20210608/ourmid/pngtree-deep-gray-frame-png-image_3418401.jpg"
+                    alt="Ảnh đại diện">
+            </router-link>
             <div class="auth-buttons">
-                <!-- <button class="register-btn">Đăng ký</button> -->
-                <button class="login-btn">Đăng nhập</button>
+
+                <!-- Hiển thị nút Đăng nhập nếu người dùng chưa đăng nhập -->
+                <router-link v-if="!isAuthenticated" to="/login" class="login-btn">Đăng nhập</router-link>
+                <!-- Hiển thị nút Đăng xuất nếu người dùng đã đăng nhập -->
+                <button v-else @click="handleLogout" class="logout-btn">Đăng xuất</button>
             </div>
         </div>
     </header>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
     name: 'Header',
+    computed: {
+        ...mapState(['isAuthenticated']) // Lấy trạng thái đăng nhập từ Vuex
+    },
+    methods: {
+        ...mapActions(['logout']),
+        handleLogout() {
+            this.logout(); // Gọi action logout để cập nhật trạng thái đăng nhập
+            this.$router.push("/login"); // Điều hướng về trang đăng nhập
+        }
+    }
 };
 </script>
 
@@ -59,6 +78,14 @@ export default {
 
 .logo img {
     height: 40px;
+}
+
+.img-profile img {
+    max-height: 40px;
+    margin-right: 10px;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #133E87;
 }
 
 .name-web {
@@ -131,6 +158,21 @@ export default {
 .register-btn:hover,
 .login-btn:hover {
     background-color: #e64a19;
+}
+
+.logout-btn {
+    background-color: #e64a19;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c43b16;
 }
 
 /* Ẩn tên web và nút đăng ký khi màn hình nhỏ hơn 768px */

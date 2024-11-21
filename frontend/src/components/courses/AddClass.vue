@@ -1,6 +1,6 @@
 <template>
     <div class="add-class-container">
-        <h2>Thêm Lớp Học</h2>
+        <h2>Thêm lớp học</h2>
         <form @submit.prevent="addClass">
             <div class="form-group">
                 <label for="ten_lop_dao_tao">Tên lớp đào tạo:</label>
@@ -34,7 +34,7 @@
                 <label for="so_tiet_thuc_hanh">Số tiết thực hành:</label>
                 <input type="number" v-model="newClass.so_tiet_thuc_hanh" placeholder="Số tiết thực hành" required />
             </div>
-            <button type="submit" class="submit-btn">Thêm Lớp Học</button>
+            <button type="submit" class="submit-btn">Thêm lớp học</button>
         </form>
     </div>
 </template>

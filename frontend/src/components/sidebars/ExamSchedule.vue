@@ -1,4 +1,3 @@
-<!-- src/components/About.vue -->
 <template>
     <div>
         <h1>Lịch thi</h1>

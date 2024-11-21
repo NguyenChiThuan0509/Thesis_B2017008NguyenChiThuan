@@ -37,7 +37,7 @@
                     required />
             </div>
 
-            <button type="submit">Sửa hoàn thành</button>
+            <button class="submit-btn" type="submit">Sửa hoàn thành</button>
         </form>
     </div>
 </template>

@@ -1,6 +1,8 @@
 const express = require("express");
 const mysql = require("mysql2");
-const cors = require("cors"); // Import thư viện cors
+const cors = require("cors");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 const port = 3000;
@@ -12,59 +14,253 @@ app.use(
 );
 
 app.use(express.json());
+require("dotenv").config();
 
-// Kết nối database
+const SECRET_KEY = process.env.SECRET_KEY;
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "P28LsJyK",
-  database: "luanvan",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 db.connect((err) => {
-  if (err) throw err;
-  console.log("Đã kết nối MySQL!");
+  if (err) {
+    console.error("Không thể kết nối MySQL:", err);
+  } else {
+    console.log("Đã kết nối MySQL!");
+  }
+});
+
+// Middleware xác thực token
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Token không tồn tại!" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Token không hợp lệ!" });
+    }
+    req.user = user;
+    next();
+  });
+}
+
+// Middleware kiểm tra quyền dựa trên vai trò
+function authorizeRole(roles) {
+  return (req, res, next) => {
+    const userRole = req.user.role;
+    if (!roles.includes(userRole)) {
+      return res.status(403).json({ error: "Không có quyền truy cập" });
+    }
+    next();
+  };
+}
+
+// ----------------------------------------------------------------*----------------------------------------------------------------
+
+// Đăng ký người dùng mới (Chỉ admin)
+app.post(
+  "/register",
+  verifyToken,
+  authorizeRole(["admin"]),
+  async (req, res) => {
+    const { username, email, password, role, full_name } = req.body;
+
+    db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email],
+      async (err, results) => {
+        if (err) return res.status(500).json({ error: "Database error" });
+        if (results.length > 0)
+          return res.status(400).json({ error: "Email đã được sử dụng" });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        db.query(
+          "INSERT INTO users (username, email, password, role, full_name) VALUES (?, ?, ?, ?, ?)",
+          [username, email, hashedPassword, role || "guest", full_name],
+          (err) => {
+            if (err) return res.status(500).json({ error: "Database error" });
+            res.status(201).json({ message: "Đăng ký người dùng thành công" });
+          }
+        );
+      }
+    );
+  }
+);
+
+// Đăng nhập
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: "Email và mật khẩu không được để trống" });
+  }
+
+  db.query(
+    "SELECT * FROM users WHERE email = ?",
+    [email],
+    async (err, results) => {
+      if (err) return res.status(500).json({ error: "Database error" });
+      if (results.length === 0)
+        return res
+          .status(401)
+          .json({ error: "Email hoặc mật khẩu không đúng" });
+
+      const user = results[0];
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid)
+        return res
+          .status(401)
+          .json({ error: "Email hoặc mật khẩu không đúng" });
+
+      const token = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, {
+        expiresIn: "1h",
+      });
+      res.json({ token });
+    }
+  );
+});
+
+// Đăng xuất
+app.post("/logout", (req, res) => {
+  res.json({ message: "Đăng xuất thành công" });
 });
 
 // ----------------------------------------------------------------*----------------------------------------------------------------
 
-// Tạo route lấy dữ liệu từ bảng `GiaoVien`
-app.get("/api/danh-sach-giao-vien", (req, res) => {
-  db.query("SELECT * FROM GiaoVien", (err, results) => {
-    if (err) throw err;
-    res.json(results);
-  });
-});
+// API lấy thông tin người dùng
+app.get("/api/user/profile", verifyToken, (req, res) => {
+  const userId = req.user.id; // Lấy ID từ token
+  const sql =
+    "SELECT username, email, full_name, avatar_url FROM users WHERE id = ?";
 
-// Route lấy dữ liệu từ bảng hoc_phi
-app.get("/api/hoc-phi", (req, res) => {
-  const query = "SELECT ten_lop, le_phi, le_phi_sinh_vien FROM hoc_phi";
-  db.query(query, (err, results) => {
+  db.query(sql, [userId], (err, result) => {
     if (err) {
-      console.error("Lỗi khi lấy dữ liệu học phí:", err);
-      res.status(500).send("Lỗi khi lấy dữ liệu học phí từ cơ sở dữ liệu.");
-    } else {
-      res.json(results);
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "Lỗi khi truy xuất dữ liệu người dùng" });
     }
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    res.json(result[0]); // Trả về thông tin người dùng
   });
 });
 
-// Lấy dữ liệu của tất cả các khóa học
-app.get("/api/courses", (req, res) => {
-  const query = `
-    SELECT id, ten_lop_dao_tao, gioi_thieu, muc_tieu, noi_dung, trinh_do, so_buoi, so_tiet_ly_thuyet, so_tiet_thuc_hanh
-    FROM lop_dao_tao
-  `;
+// ----------------------------------------------------------------*----------------------------------------------------------------
 
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Lỗi khi lấy danh sách khóa học:", err);
-      res.status(500).send("Lỗi khi lấy danh sách khóa học từ cơ sở dữ liệu.");
-    } else {
-      res.json(results);
+// API thêm, sửa, xóa lớp học (chỉ admin)
+app.post("/api/courses", verifyToken, authorizeRole(["admin"]), (req, res) => {
+  const {
+    ten_lop_dao_tao,
+    gioi_thieu,
+    muc_tieu,
+    noi_dung,
+    trinh_do,
+    so_buoi,
+    so_tiet_ly_thuyet,
+    so_tiet_thuc_hanh,
+  } = req.body;
+
+  const query =
+    "INSERT INTO lop_dao_tao (ten_lop_dao_tao, gioi_thieu, muc_tieu, noi_dung, trinh_do, so_buoi, so_tiet_ly_thuyet, so_tiet_thuc_hanh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+  db.query(
+    query,
+    [
+      ten_lop_dao_tao,
+      gioi_thieu,
+      muc_tieu,
+      noi_dung,
+      trinh_do,
+      so_buoi,
+      so_tiet_ly_thuyet,
+      so_tiet_thuc_hanh,
+    ],
+    (err, results) => {
+      if (err) return res.status(500).send("Lỗi khi thêm lớp học");
+      res.status(201).json({ id: results.insertId });
     }
-  });
+  );
 });
+
+app.put(
+  "/api/courses/:id",
+  // verifyToken,
+  // authorizeRole(["admin"]),
+  (req, res) => {
+    const courseId = parseInt(req.params.id);
+    const {
+      ten_lop_dao_tao,
+      gioi_thieu,
+      muc_tieu,
+      noi_dung,
+      trinh_do,
+      so_buoi,
+      so_tiet_ly_thuyet,
+      so_tiet_thuc_hanh,
+    } = req.body;
+    const query =
+      "UPDATE lop_dao_tao SET ten_lop_dao_tao = ?, gioi_thieu = ?, muc_tieu = ?, noi_dung = ?, trinh_do = ?, so_buoi = ?, so_tiet_ly_thuyet = ?, so_tiet_thuc_hanh = ? WHERE id = ?";
+
+    db.query(
+      query,
+      [
+        ten_lop_dao_tao,
+        gioi_thieu,
+        muc_tieu,
+        noi_dung,
+        trinh_do,
+        so_buoi,
+        so_tiet_ly_thuyet,
+        so_tiet_thuc_hanh,
+        courseId,
+      ],
+      (err) => {
+        if (err) return res.status(500).send("Lỗi khi cập nhật lớp học");
+        res.status(200).send("Cập nhật lớp học thành công!");
+      }
+    );
+  }
+);
+
+app.delete(
+  "/api/courses/:id",
+  verifyToken,
+  authorizeRole(["admin"]),
+  (req, res) => {
+    const courseId = parseInt(req.params.id, 10);
+    if (isNaN(courseId))
+      return res.status(400).json({ error: "ID lớp học không hợp lệ" });
+
+    db.query("DELETE FROM lop_dao_tao WHERE id = ?", [courseId], (err) => {
+      if (err) return res.status(500).send("Lỗi khi xóa lớp học");
+      res.status(204).send();
+    });
+  }
+);
+
+// API cho giáo viên và học viên: Xem danh sách khóa học
+app.get(
+  "/api/courses",
+  // verifyToken,
+  // authorizeRole(["admin", "teacher", "student"]),
+  (req, res) => {
+    db.query("SELECT * FROM lop_dao_tao", (err, results) => {
+      if (err) return res.status(500).send("Lỗi khi lấy danh sách khóa học");
+      res.json(results);
+    });
+  }
+);
 
 // Lấy dữ liệu chi tiết của một khóa học theo ID
 app.get("/api/courses/:id", (req, res) => {
@@ -89,125 +285,18 @@ app.get("/api/courses/:id", (req, res) => {
   });
 });
 
-// --------------------------------Thêm, sửa, xóa lớp học--------------------------------
-// Thêm một lớp học mới
-app.post("/api/courses", (req, res) => {
-  const {
-    ten_lop_dao_tao,
-    gioi_thieu,
-    muc_tieu,
-    noi_dung,
-    trinh_do,
-    so_buoi,
-    so_tiet_ly_thuyet,
-    so_tiet_thuc_hanh,
-  } = req.body;
-  const query =
-    "INSERT INTO lop_dao_tao (ten_lop_dao_tao, gioi_thieu, muc_tieu, noi_dung, trinh_do, so_buoi, so_tiet_ly_thuyet, so_tiet_thuc_hanh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-  db.query(
-    query,
-    [
-      ten_lop_dao_tao,
-      gioi_thieu,
-      muc_tieu,
-      noi_dung,
-      trinh_do,
-      so_buoi,
-      so_tiet_ly_thuyet,
-      so_tiet_thuc_hanh,
-    ],
-    (err, results) => {
-      if (err) {
-        console.error("Lỗi khi thêm lớp học:", err);
-        res.status(500).send("Lỗi khi thêm lớp học vào cơ sở dữ liệu.");
-      } else {
-        res.status(201).json({
-          id: results.insertId,
-          ten_lop_dao_tao,
-          gioi_thieu,
-          muc_tieu,
-          noi_dung,
-          trinh_do,
-          so_buoi,
-          so_tiet_ly_thuyet,
-          so_tiet_thuc_hanh,
-        });
-      }
-    }
-  );
-});
-
-// Cập nhật thông tin lớp học
-app.put("/api/courses/:id", (req, res) => {
-  const courseId = parseInt(req.params.id);
-  const {
-    ten_lop_dao_tao,
-    gioi_thieu,
-    muc_tieu,
-    noi_dung,
-    trinh_do,
-    so_buoi,
-    so_tiet_ly_thuyet,
-    so_tiet_thuc_hanh,
-  } = req.body;
-
-  const query = `
-    UPDATE lop_dao_tao
-    SET ten_lop_dao_tao = ?, gioi_thieu = ?, muc_tieu = ?, noi_dung = ?, 
-        trinh_do = ?, so_buoi = ?, so_tiet_ly_thuyet = ?, so_tiet_thuc_hanh = ?
-    WHERE id = ?`;
-
-  db.query(
-    query,
-    [
-      ten_lop_dao_tao,
-      gioi_thieu,
-      muc_tieu,
-      noi_dung,
-      trinh_do,
-      so_buoi,
-      so_tiet_ly_thuyet,
-      so_tiet_thuc_hanh,
-      courseId,
-    ],
-    (err) => {
-      if (err) {
-        console.error("Lỗi khi cập nhật lớp học:", err);
-        res.status(500).send("Lỗi khi cập nhật lớp học.");
-      } else {
-        res.status(200).send("Cập nhật lớp học thành công!");
-      }
-    }
-  );
-});
-
-// Xóa lớp học
-app.delete("/api/courses/:id", (req, res) => {
-  const courseId = parseInt(req.params.id);
-  const query = "DELETE FROM lop_dao_tao WHERE id = ?";
-
-  db.query(query, [courseId], (err) => {
-    if (err) {
-      console.error("Lỗi khi xóa lớp học:", err);
-      res.status(500).send("Lỗi khi xóa lớp học từ cơ sở dữ liệu.");
-    } else {
-      res.status(204).send(); // No Content
-    }
-  });
-});
-// ----------------------------------------------------------------
-
-// Tạo route lấy dữ liệu từ bảng `thong_bao_chieu_sinh`
-app.get("/api/thong-bao-chieu-sinh", (req, res) => {
-  db.query("SELECT * FROM thong_bao_chieu_sinh", (err, results) => {
-    if (err) {
-      console.error("Lỗi khi lấy dữ liệu:", err);
-      res.status(500).send("Lỗi khi lấy dữ liệu từ cơ sở dữ liệu.");
-    } else {
+// API cho khách: Xem thông tin công khai về chiêu sinh
+app.get(
+  "/api/thong-bao-chieu-sinh",
+  // verifyToken,
+  // authorizeRole(["admin", "teacher", "student", "guest"]),
+  (req, res) => {
+    db.query("SELECT * FROM thong_bao_chieu_sinh", (err, results) => {
+      if (err) return res.status(500).send("Lỗi khi lấy thông tin chiêu sinh");
       res.json(results);
-    }
-  });
-});
+    });
+  }
+);
 
 app.get("/api/thong-bao-chieu-sinh/:id", (req, res) => {
   const id = req.params.id;
@@ -230,6 +319,9 @@ app.get("/api/thong-bao-chieu-sinh/:id", (req, res) => {
 
       const thongBao = thongBaoResult[0];
       const tableName = thongBao.table_name;
+      if (!/^[a-zA-Z0-9_]+$/.test(tableName)) {
+        return res.status(400).send("Tên bảng không hợp lệ.");
+      }
 
       // Lấy dữ liệu lớp học từ bảng lớp học tương ứng
       const queryLopHoc = `SELECT * FROM ${tableName}`;
@@ -258,14 +350,14 @@ app.post("/api/add-thong-bao-chieu-sinh", (req, res) => {
 
   // Tạo bảng nếu chưa tồn tại
   const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS ${tableName} (
-      lop VARCHAR(10) PRIMARY KEY,
-      ngay_khai_giang DATE,
-      phong VARCHAR(10),
-      so_buoi VARCHAR(10),
-      buoi_hoc VARCHAR(50)
-    )
-  `;
+      CREATE TABLE IF NOT EXISTS ${tableName} (
+        lop VARCHAR(10) PRIMARY KEY,
+        ngay_khai_giang DATE,
+        phong VARCHAR(10),
+        so_buoi VARCHAR(10),
+        buoi_hoc VARCHAR(50)
+      )
+    `;
 
   db.query(createTableQuery, (err) => {
     if (err) {
@@ -276,9 +368,9 @@ app.post("/api/add-thong-bao-chieu-sinh", (req, res) => {
 
     // Thêm thông báo mới vào bảng thong_bao_chieu_sinh
     const insertThongBaoQuery = `
-      INSERT INTO thong_bao_chieu_sinh (tieu_de, gioi_thieu, table_name)
-      VALUES (?, ?, ?)
-    `;
+        INSERT INTO thong_bao_chieu_sinh (tieu_de, gioi_thieu, table_name)
+        VALUES (?, ?, ?)
+      `;
 
     db.query(
       insertThongBaoQuery,
@@ -298,6 +390,26 @@ app.post("/api/add-thong-bao-chieu-sinh", (req, res) => {
   });
 });
 
+// Tạo route lấy dữ liệu từ bảng `GiaoVien`
+app.get("/api/danh-sach-giao-vien", (req, res) => {
+  db.query("SELECT * FROM GiaoVien", (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+});
+
+// Route lấy dữ liệu từ bảng hoc_phi
+app.get("/api/hoc-phi", (req, res) => {
+  const query = "SELECT ten_lop, le_phi, le_phi_sinh_vien FROM hoc_phi";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Lỗi khi lấy dữ liệu học phí:", err);
+      res.status(500).send("Lỗi khi lấy dữ liệu học phí từ cơ sở dữ liệu.");
+    } else {
+      res.json(results);
+    }
+  });
+});
 // ----------------------------------------------------------------*----------------------------------------------------------------
 
 app.listen(port, () => {
