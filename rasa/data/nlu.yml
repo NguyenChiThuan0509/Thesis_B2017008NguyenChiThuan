@@ -40,7 +40,7 @@ nlu:
       - không
       - không phải
 
-  - intent: ask_func # hỏi chức năng
+  - intent: query_func # hỏi chức năng
     examples: |
       - bạn làm được những gì?
       - bạn có thể làm được những gì?
@@ -59,21 +59,21 @@ nlu:
       - [Nguyễn Chí Thuận](student_name) và [CB522](class_name)
       - [Nguyễn Chí Thuận](student_name) là tên của tôi, còn [CB522](class_name) là tên lớp của tôi
 
-  - intent: ask_class_infor # hỏi thông tin lớp
+  - intent: query_class_infor # hỏi thông tin lớp
     examples: |
       - Có bao nhiêu lớp học?
       - Có những lớp nào được mở?
       - Có những khóa nào đang được mở?
       - Có những lớp chứng chỉ nào?
 
-  - intent: ask_number_of_students # hỏi số lượng học sinh của lớp học
+  - intent: query_number_of_students # hỏi số lượng học sinh của lớp học
     examples: |
       - Lớp [CB522](class_name) có bao nhiêu học sinh?
       - Lớp [CB522](class_name) có bao nhiêu người?
       - Cho tôi biết số lượng học sinh trong lớp [CB403](class_name)?
       - Hãy cho tôi biết số học sinh trong lớp [CB522](class_name)?
 
-  - intent: ask_school_schedule # hỏi lịch học
+  - intent: query_school_schedule # hỏi lịch học
     examples: |
       - Lịch học lớp [NC43](class_name) là khi nào?
       - Lớp [NC43](class_name) đã kết thúc chưa?
@@ -81,13 +81,13 @@ nlu:
       - Khi nào thì lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](class_name) bắt đầu?
       - Khi nào có lịch học của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name)?
 
-  - intent: ask_exam_schedule # hỏi lịch thi
+  - intent: query_exam_schedule # hỏi lịch thi
     examples: |
       - Lịch thi của lớp [NC43](class_name)?
       - Lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](class_name) khi nào bắt đầu thi?
       - Khi nào có lịch thi của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name)?
 
-  - intent: ask_tuition # hỏi học phí
+  - intent: query_tuition # hỏi học phí
     examples: |
       - Học phí của lớp Học và thi [Chứng chỉ Ứng dụng CNTT cơ bản](class_name) là bao nhiêu?
       - Học phí của lớp Học và thi [CB493](class_name) là bao nhiêu?
@@ -96,7 +96,7 @@ nlu:
       - Tôi phải đóng bao nhiêu tiền để có thể học được?
       - Tôi có được miễn giảm học phí không?
 
-  - intent: ask_fees # hỏi lệ phí thi
+  - intent: query_fees # hỏi lệ phí thi
     examples: |
       - Lệ phí thi của chứng chỉ ứng dụng công nghệ thông tin là bao nhiêu tiền?
       - Tôi phải đóng bao nhiêu lệ phí thi?
@@ -104,18 +104,18 @@ nlu:
       - Nếu tôi là học sinh tự do thì có phải đóng lệ phí thi không?
       - Nếu tôi là học sinh, học viên ghi danh học hoặc ôn tập tại trung tâm thì có phải đóng lệ phí thi không?
 
-  - intent: ask_teacher_infor # hỏi thông tin giáo viên
+  - intent: query_teacher_infor # hỏi thông tin giáo viên
     examples: |
       - Giáo viên dạy lớp [NC43](class_name) là ai?
       - Ai là [giảng viên](teacher_name) của lớp [CB493](class_name)?
 
-  - intent: ask_address_class # hỏi địa chỉ phòng học
+  - intent: query_address_class # hỏi địa chỉ phòng học
     examples: |
       - lớp [NC43](class_name) học ở đâu vậy?
       - Chỗ để học lớp [NC43](class_name) là ở đâu?
       - Địa điểm của lớp [NC43](class_name) ở đâu?
 
-  - intent: chieu_sinh #chiêu sinh
+  - intent: enrollment #chiêu sinh
     examples: |
       - Sắp tới có khai giảng các lớp học nào?
       - Trung tâm sắp chiêu sinh như thế nào?

@@ -249,7 +249,6 @@ app.delete(
   }
 );
 
-// API cho giáo viên và học viên: Xem danh sách khóa học
 app.get(
   "/api/courses",
   // verifyToken,
@@ -285,7 +284,6 @@ app.get("/api/courses/:id", (req, res) => {
   });
 });
 
-// API cho khách: Xem thông tin công khai về chiêu sinh
 app.get(
   "/api/thong-bao-chieu-sinh",
   // verifyToken,
@@ -298,10 +296,11 @@ app.get(
   }
 );
 
+// Endpoint lấy thông tin thông báo và danh sách các lớp chiêu sinh
 app.get("/api/thong-bao-chieu-sinh/:id", (req, res) => {
   const id = req.params.id;
 
-  // Lấy thông báo và tên bảng lớp học
+  // Lấy thông báo chiêu sinh
   db.query(
     "SELECT * FROM thong_bao_chieu_sinh WHERE id = ?",
     [id],
@@ -318,83 +317,177 @@ app.get("/api/thong-bao-chieu-sinh/:id", (req, res) => {
       }
 
       const thongBao = thongBaoResult[0];
-      const tableName = thongBao.table_name;
-      if (!/^[a-zA-Z0-9_]+$/.test(tableName)) {
-        return res.status(400).send("Tên bảng không hợp lệ.");
+
+      // Lấy danh sách lớp chiêu sinh liên quan
+      db.query(
+        "SELECT * FROM lop_chieu_sinh WHERE thong_bao_id = ?",
+        [id],
+        (err, lopHocResults) => {
+          if (err) {
+            console.error("Lỗi khi lấy danh sách lớp chiêu sinh:", err);
+            res.status(500).send("Lỗi khi lấy danh sách lớp chiêu sinh.");
+          } else {
+            res.json({ thongBao, lopHocList: lopHocResults });
+          }
+        }
+      );
+    }
+  );
+});
+// ----------------------------------------------------------------*----------------------------------------------------------------
+
+// API lấy thông tin chi tiết thông báo lịch thi
+app.get("/api/thong-bao-lich_thi/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "ID không hợp lệ" });
+  }
+
+  const query = "SELECT * FROM thong_bao_lich_thi WHERE id = ?";
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error("Lỗi khi lấy thông tin thông báo lịch thi:", err);
+      return res.status(500).send("Lỗi khi lấy thông báo lịch thi.");
+    }
+
+    if (results.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Không tìm thấy thông báo lịch thi." });
+    }
+
+    res.json(results[0]);
+  });
+});
+
+// Lấy danh sách thông báo lịch thi
+app.get("/api/thong-bao-lich_thi", (req, res) => {
+  const query = "SELECT * FROM thong_bao_lich_thi";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Lỗi khi lấy thông báo lịch thi:", err);
+      return res.status(500).send("Lỗi khi lấy danh sách thông báo lịch thi.");
+    }
+    res.json(results);
+  });
+});
+
+// API lấy danh sách lịch thi liên quan đến một thông báo
+app.get("/api/lich-thi/:thong_bao_id", (req, res) => {
+  const thongBaoId = parseInt(req.params.thong_bao_id, 10);
+  if (isNaN(thongBaoId)) {
+    return res.status(400).json({ error: "ID thông báo không hợp lệ" });
+  }
+
+  const query = "SELECT * FROM lich_thi WHERE thong_bao_id = ?";
+  db.query(query, [thongBaoId], (err, results) => {
+    if (err) {
+      console.error("Lỗi khi lấy danh sách lịch thi:", err);
+      return res.status(500).send("Lỗi khi lấy danh sách lịch thi.");
+    }
+
+    res.json(results);
+  });
+});
+
+// API thêm lịch thi (Admin)
+app.post("/api/lich-thi", verifyToken, authorizeRole(["admin"]), (req, res) => {
+  const { thong_bao_id, ngay_thi, ca_thi, dia_diem, ghi_chu } = req.body;
+
+  const query =
+    "INSERT INTO lich_thi (thong_bao_id, ngay_thi, ca_thi, dia_diem, ghi_chu) VALUES (?, ?, ?, ?, ?)";
+  db.query(
+    query,
+    [thong_bao_id, ngay_thi, ca_thi, dia_diem, ghi_chu],
+    (err) => {
+      if (err) {
+        console.error("Lỗi khi thêm lịch thi:", err);
+        return res.status(500).send("Lỗi khi thêm lịch thi.");
       }
 
-      // Lấy dữ liệu lớp học từ bảng lớp học tương ứng
-      const queryLopHoc = `SELECT * FROM ${tableName}`;
-      db.query(queryLopHoc, (err, lopHocResults) => {
-        if (err) {
-          console.error("Lỗi khi lấy dữ liệu lớp học:", err);
-          res.status(500).send("Lỗi khi lấy dữ liệu lớp học.");
-        } else {
-          res.json({ thongBao, lopHocList: lopHocResults });
-        }
-      });
+      res.status(201).json({ message: "Thêm lịch thi thành công." });
     }
   );
 });
 
-// API tạo thông báo mới và tự động tạo bảng lớp học
-app.post("/api/add-thong-bao-chieu-sinh", (req, res) => {
-  const { tieu_de, gioi_thieu } = req.body;
-
-  // Tạo tên bảng dựa trên tháng, năm hiện tại
-  const now = new Date();
-  const tableName = `chieu_sinh_t${String(now.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}_${now.getFullYear()}`;
-
-  // Tạo bảng nếu chưa tồn tại
-  const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS ${tableName} (
-        lop VARCHAR(10) PRIMARY KEY,
-        ngay_khai_giang DATE,
-        phong VARCHAR(10),
-        so_buoi VARCHAR(10),
-        buoi_hoc VARCHAR(50)
-      )
-    `;
-
-  db.query(createTableQuery, (err) => {
-    if (err) {
-      console.error("Lỗi khi tạo bảng:", err);
-      res.status(500).send("Lỗi khi tạo bảng lớp học.");
-      return;
+// API cập nhật lịch thi (Admin)
+app.put(
+  "/api/lich-thi/:id",
+  verifyToken,
+  authorizeRole(["admin"]),
+  (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "ID lịch thi không hợp lệ" });
     }
 
-    // Thêm thông báo mới vào bảng thong_bao_chieu_sinh
-    const insertThongBaoQuery = `
-        INSERT INTO thong_bao_chieu_sinh (tieu_de, gioi_thieu, table_name)
-        VALUES (?, ?, ?)
-      `;
+    const { ngay_thi, ca_thi, dia_diem, ghi_chu } = req.body;
 
-    db.query(
-      insertThongBaoQuery,
-      [tieu_de, gioi_thieu, tableName],
-      (err, result) => {
-        if (err) {
-          console.error("Lỗi khi thêm thông báo chiêu sinh:", err);
-          res.status(500).send("Lỗi khi thêm thông báo chiêu sinh.");
-        } else {
-          res.json({
-            message: "Thêm thông báo và bảng lớp học thành công.",
-            id: result.insertId,
-          });
-        }
+    const query =
+      "UPDATE lich_thi SET ngay_thi = ?, ca_thi = ?, dia_diem = ?, ghi_chu = ? WHERE id = ?";
+    db.query(query, [ngay_thi, ca_thi, dia_diem, ghi_chu, id], (err) => {
+      if (err) {
+        console.error("Lỗi khi cập nhật lịch thi:", err);
+        return res.status(500).send("Lỗi khi cập nhật lịch thi.");
       }
-    );
-  });
-});
 
-// Tạo route lấy dữ liệu từ bảng `GiaoVien`
-app.get("/api/danh-sach-giao-vien", (req, res) => {
-  db.query("SELECT * FROM GiaoVien", (err, results) => {
-    if (err) throw err;
-    res.json(results);
+      res.status(200).json({ message: "Cập nhật lịch thi thành công." });
+    });
+  }
+);
+
+// API xóa lịch thi (Admin)
+app.delete(
+  "/api/lich-thi/:id",
+  verifyToken,
+  authorizeRole(["admin"]),
+  (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "ID lịch thi không hợp lệ" });
+    }
+
+    const query = "DELETE FROM lich_thi WHERE id = ?";
+    db.query(query, [id], (err) => {
+      if (err) {
+        console.error("Lỗi khi xóa lịch thi:", err);
+        return res.status(500).send("Lỗi khi xóa lịch thi.");
+      }
+
+      res.status(204).send();
+    });
+  }
+);
+
+// ----------------------------------------------------------------*----------------------------------------------------------------
+// Tra cứu điểm
+app.get("/api/tra-cuu-diem", (req, res) => {
+  const { soBaoDanh, maKhoaThi, ngayThi } = req.query;
+
+  if (!soBaoDanh || !maKhoaThi || !ngayThi) {
+    return res
+      .status(400)
+      .json({
+        error: "Vui lòng nhập đầy đủ Số báo danh, Mã khóa thi và Ngày thi.",
+      });
+  }
+
+  const query = `
+    SELECT * 
+    FROM bang_diem 
+    WHERE so_bao_danh = ? AND ma_khoa_thi = ? AND ngay_thi = ?
+  `;
+  db.query(query, [soBaoDanh, maKhoaThi, ngayThi], (err, results) => {
+    if (err) {
+      console.error("Lỗi khi truy vấn dữ liệu:", err);
+      return res.status(500).json({ error: "Lỗi khi truy vấn dữ liệu." });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Không tìm thấy kết quả phù hợp." });
+    }
+
+    res.json(results[0]);
   });
 });
 

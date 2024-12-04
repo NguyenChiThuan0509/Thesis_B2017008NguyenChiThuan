@@ -8,8 +8,22 @@
                 </li>
             </router-link>
 
+            <!-- Chiêu sinh -->
+            <router-link to="/addstudent" class="router-link" @click="closeAllMenus()">
+                <li :class="isActive('/addstudent') ? 'active-menu' : ''">
+                    <i class="fa-solid fa-plus"></i> Chiêu sinh
+                </li>
+            </router-link>
+
+            <!-- Lịch thi -->
+            <router-link to="/examschedule" class="router-link" @click="closeAllMenus()">
+                <li :class="isActive('/examschedule') ? 'active-menu' : ''">
+                    <i class="fa-solid fa-calendar-days"></i> Lịch thi
+                </li>
+            </router-link>
+
             <!-- Học Tập (Collapsible) -->
-            <li>
+            <!-- <li>
                 <div @click="toggleMenu('hocTap')">
                     <span
                         :class="[isHocTapOpen ? 'open-menu' : '', isActive('/addstudent') || isActive('/examschedule') ? 'active-menu' : '']">
@@ -29,37 +43,30 @@
                         </li>
                     </router-link>
                 </ul>
-            </li>
+            </li> -->
 
             <!-- Tra Cứu (Collapsible) -->
             <li>
                 <div @click="toggleMenu('traCuu')">
                     <span
                         :class="[isTraCuuOpen ? 'open-menu' : '', isActive('/searchresult') || isActive('/searchdegree') ? 'active-menu' : '']">
-                        <i class="fa-solid fa-heart"></i> Tra cứu
+                        <i class="fa-solid fa-heart"></i> Kết quả thi
                     </span>
                     <i class="icon" :class="isTraCuuOpen ? 'rotate' : ''">▼</i>
                 </div>
                 <ul v-if="isTraCuuOpen" class="sub-menu">
                     <router-link to="/searchresult" class="router-link">
                         <li :class="isActive('/searchresult') ? 'active-submenu' : ''">
-                            <i class="fa-solid fa-address-card"></i> Tra cứu kết quả
+                            <i class="fa-solid fa-address-card"></i> Theo cá nhân
                         </li>
                     </router-link>
                     <router-link to="/searchdegree" class="router-link">
                         <li :class="isActive('/searchdegree') ? 'active-submenu' : ''">
-                            <i class="fa-solid fa-star"></i> Tra cứu văn bằng
+                            <i class="fa-solid fa-star"></i> Theo lớp
                         </li>
                     </router-link>
                 </ul>
             </li>
-
-            <!-- Giáo viên -->
-            <router-link to="/teacher" class="router-link" @click="closeAllMenus()">
-                <li :class="isActive('/teacher') ? 'active-menu' : ''">
-                    <i class="fa-brands fa-readme"></i> Giáo viên
-                </li>
-            </router-link>
 
             <!-- Liên Hệ -->
             <router-link to="/contact" class="router-link" @click="closeAllMenus()">

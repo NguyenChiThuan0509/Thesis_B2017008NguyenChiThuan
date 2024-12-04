@@ -8,56 +8,56 @@ stories:
       - intent: goodbye
       - action: utter_goodbye
 
-  - story: ask func
+  - story: query func
     steps:
-      - intent: ask_func
+      - intent: query_func
       - action: utter_func
 
-  - story: ask school schedule
+  - story: query school schedule
     steps:
-      - intent: ask_school_schedule
-      - action: action_ask_school_schedule
+      - intent: query_school_schedule
+      - action: action_query_school_schedule
 
-  - story: ask exam schedule
+  - story: query exam schedule
     steps:
-      - intent: ask_exam_schedule
-      - action: action_ask_exam_schedule
+      - intent: query_exam_schedule
+      - action: action_query_exam_schedule
 
-  - story: ask tuition
+  - story: query tuition
     steps:
-      - intent: ask_tuition
+      - intent: query_tuition
       - action: utter_tuition
       - action: action_tuition
 
-  - story: ask fees
+  - story: query fees
     steps:
-      - intent: ask_fees
+      - intent: query_fees
       - action: utter_fees
 
-  - story: ask teachers information
+  - story: query teachers information
     steps:
-      - intent: ask_teacher_infor
-      - action: action_ask_teacher_infor
+      - intent: query_teacher_infor
+      - action: action_query_teacher_infor
 
-  - story: ask address class
+  - story: query address class
     steps:
-      - intent: ask_address_class
-      - action: action_ask_address_class
+      - intent: query_address_class
+      - action: action_query_address_class
 
-  - story: ask class information
+  - story: query class information
     steps:
-      - intent: ask_class_infor
+      - intent: query_class_infor
       - action: utter_class
 
-  - story: ask number of students
+  - story: query number of students
     steps:
-      - intent: ask_number_of_students
+      - intent: query_number_of_students
       - action: action_count_students
 
   - story: chieu sinh
     steps:
-      - intent: chieu_sinh
-      - action: action_chieu_sinh
+      - intent: enrollment
+      - action: action_enrollment
 
   - story: test scores
     steps:

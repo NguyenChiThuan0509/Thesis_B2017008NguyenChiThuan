@@ -10,16 +10,18 @@
                     <tr>
                         <th>Lớp</th>
                         <th>Ngày khai giảng</th>
+                        <th>Chỉ tiêu</th>
                         <th>Phòng</th>
                         <th>Số buổi</th>
                         <th>Buổi học</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="lop in lopHocList" :key="lop.lop">
-                        <td>{{ lop.lop }}</td>
-                        <td>{{ lop.ngay_khai_giang }}</td>
-                        <td>{{ lop.phong }}</td>
+                    <tr v-for="lop in lopHocList" :key="lop.id">
+                        <td>{{ lop.ten_lop }}</td>
+                        <td>{{ formatDate(lop.ngay_khai_giang) }}</td>
+                        <td>{{ lop.chi_tieu }}</td>
+                        <td>{{ lop.so_phong }}</td>
                         <td>{{ lop.so_buoi }}</td>
                         <td>{{ lop.buoi_hoc }}</td>
                     </tr>
@@ -68,18 +70,18 @@
 </template>
 
 <script>
-import Footer from '../Footer.vue';
-import axios from 'axios';
+import Footer from "../Footer.vue";
+import axios from "axios";
 
 export default {
     name: "InAddStudent",
     components: { Footer },
-    props: ["id"],
+    props: ["id"], // ID thông báo được truyền từ route hoặc parent component
     data() {
         return {
-            announcement: {},
-            lopHocList: [],
-            hocPhiList: [], // Thêm dữ liệu học phí
+            announcement: {}, // Thông tin thông báo chiêu sinh
+            lopHocList: [], // Danh sách các lớp học
+            hocPhiList: [], // Dữ liệu học phí
         };
     },
     async created() {
@@ -87,29 +89,41 @@ export default {
         await this.fetchHocPhi(); // Lấy dữ liệu học phí khi tạo component
     },
     methods: {
+        // Lấy thông tin thông báo và danh sách lớp học
         async fetchAnnouncementDetails(id) {
             try {
-                const response = await axios.get(`http://localhost:3000/api/thong-bao-chieu-sinh/${id}`);
-                this.announcement = response.data.thongBao;
-                this.lopHocList = response.data.lopHocList;
+                const response = await axios.get(
+                    `http://localhost:3000/api/thong-bao-chieu-sinh/${id}`
+                );
+                this.announcement = response.data.thongBao; // Thông báo chiêu sinh
+                this.lopHocList = response.data.lopHocList; // Danh sách lớp chiêu sinh
             } catch (error) {
-                console.error("Lỗi khi lấy dữ liệu:", error);
+                console.error("Lỗi khi lấy thông tin chiêu sinh:", error);
             }
         },
+        // Lấy dữ liệu học phí
         async fetchHocPhi() {
             try {
-                const response = await axios.get(`http://localhost:3000/api/hoc-phi`);
-                this.hocPhiList = response.data; // Gán trực tiếp vì API trả về mảng
+                const response = await axios.get("http://localhost:3000/api/hoc-phi");
+                this.hocPhiList = response.data; // Gán dữ liệu học phí vào state
             } catch (error) {
                 console.error("Lỗi khi lấy dữ liệu học phí:", error);
             }
         },
+        // Định dạng tiền tệ
         formatCurrency(value) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+            return new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+            }).format(value);
+        },
+        formatDate(date) {
+            return new Date(date).toLocaleDateString("vi-VN");
         },
     },
 };
 </script>
+
 
 <style scoped>
 h1,

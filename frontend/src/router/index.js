@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainContents from "../components/MainContent.vue";
 import AddStudent from "../components/sidebars/AddStudent.vue";
 import ExamSchedule from "../components/sidebars/ExamSchedule.vue";
+import InExamSchedule from "../components/sidebars/InExamSchedule.vue";
 import SearchResult from "../components/sidebars/SearchResult.vue";
 import SearchDegree from "../components/sidebars/SearchDegree.vue";
 import Teacher from "../components/sidebars/Teacher.vue";
@@ -62,6 +63,12 @@ const routes = [
     path: "/addstudent/:id",
     name: "InAddStudent",
     component: InAddStudent,
+    props: true,
+  },
+  {
+    path: "/inexamschedule/:id",
+    name: "InExamSchedule",
+    component: InExamSchedule,
     props: true,
   },
 ];

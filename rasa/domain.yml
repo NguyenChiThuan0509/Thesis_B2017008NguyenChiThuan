@@ -1,18 +1,18 @@
 version: "3.1"
 
 intents:
-  - ask_func
-  - ask_tuition
-  - ask_class_infor
-  - ask_address_class
-  - ask_exam_schedule
-  - ask_fees
-  - ask_teacher_infor
-  - ask_school_schedule
-  - ask_number_of_students
+  - query_func
+  - query_tuition
+  - query_class_infor
+  - query_address_class
+  - query_exam_schedule
+  - query_fees
+  - query_teacher_infor
+  - query_school_schedule
+  - query_number_of_students
   - bot_challenge
   - contact
-  - chieu_sinh
+  - enrollment
   - deny
   - feedback
   - greet
@@ -100,20 +100,20 @@ responses: # trả lời mặt định ~ tĩnh
         - title: "Tra cứu văn bằng"
           payload: "/search_degrees"
         - title: "Tra cứu lịch thi"
-          payload: "/ask_exam_schedule"
+          payload: "/query_exam_schedule"
         - title: "Tra cứu thông tin lớp"
-          payload: "/ask_class_infor"
+          payload: "/query_class_infor"
 
 actions: # trả lời động
-  - action_ask_school_schedule
-  - action_ask_class_infor
-  - action_ask_exam_schedule
-  - action_ask_teacher_infor
-  - action_ask_address_class
+  - action_query_school_schedule
+  - action_query_class_infor
+  - action_query_exam_schedule
+  - action_query_teacher_infor
+  - action_query_address_class
   - action_search_degrees
   - action_query_database
   - action_count_students
-  - action_chieu_sinh
+  - action_enrollment
   - action_test_scores
   - action_tuition
   - action_fees
