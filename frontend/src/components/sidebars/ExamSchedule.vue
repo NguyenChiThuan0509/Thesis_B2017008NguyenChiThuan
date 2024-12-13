@@ -1,4 +1,7 @@
 <template>
+    <button @click="goHome" class="back-button">Về trang chủ</button>
+    <!-- <button @click="goToAddExam" class="add-button">Thêm thông báo</button> -->
+    <!-- <button @click="goToNotiExam" class="add-button">Thêm thông báo</button> -->
     <div>
         <h1>Lịch thi</h1>
         <h2 style="font-style: italic; font-size:small; font-weight: bold; color: blue;">
@@ -40,6 +43,12 @@ export default {
                 console.error("Lỗi khi lấy dữ liệu:", error);
             }
         },
+        goHome() {
+            this.$router.push('/');
+        },
+        goToAddExam() {
+            this.$router.push('/add-exam');
+        }
     },
 };
 </script>
@@ -78,5 +87,36 @@ h2 {
     font-weight: bolder;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     cursor: pointer;
+}
+
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+/* nút thêm thông báo */
+.add-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+
+.add-button:hover {
+    background-color: #218838;
 }
 </style>

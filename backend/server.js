@@ -3,6 +3,8 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 
 const app = express();
 const port = 3000;
@@ -59,6 +61,17 @@ function authorizeRole(roles) {
     next();
   };
 }
+
+// Cấu hình multer để lưu trữ tệp tải lên
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Đường dẫn lưu tệp
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Tên tệp duy nhất
+  },
+});
+const upload = multer({ storage: storage });
 
 // ----------------------------------------------------------------*----------------------------------------------------------------
 
@@ -138,8 +151,7 @@ app.post("/logout", (req, res) => {
 // API lấy thông tin người dùng
 app.get("/api/user/profile", verifyToken, (req, res) => {
   const userId = req.user.id; // Lấy ID từ token
-  const sql =
-    "SELECT username, email, full_name, avatar_url FROM users WHERE id = ?";
+  const sql = "SELECT * FROM users WHERE id = ?";
 
   db.query(sql, [userId], (err, result) => {
     if (err) {
@@ -154,6 +166,18 @@ app.get("/api/user/profile", verifyToken, (req, res) => {
     }
 
     res.json(result[0]); // Trả về thông tin người dùng
+  });
+});
+
+// Endpoint lấy danh sách học viên
+app.get("/api/students", (req, res) => {
+  const query = "SELECT * FROM users WHERE role = 'student'";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Lỗi khi truy vấn database:", err);
+      return res.status(500).json({ message: "Lỗi server" });
+    }
+    res.json(results);
   });
 });
 
@@ -390,24 +414,33 @@ app.get("/api/lich-thi/:thong_bao_id", (req, res) => {
   });
 });
 
-// API thêm lịch thi (Admin)
-app.post("/api/lich-thi", verifyToken, authorizeRole(["admin"]), (req, res) => {
-  const { thong_bao_id, ngay_thi, ca_thi, dia_diem, ghi_chu } = req.body;
+app.post("/api/thong-bao-lich_thi", async (req, res) => {
+  const { tieu_de, gioi_thieu } = req.body;
+  try {
+    const [result] = await db.execute(
+      "INSERT INTO thong_bao_lich_thi (tieu_de, gioi_thieu) VALUES (?, ?)",
+      [tieu_de, gioi_thieu]
+    );
+    res.json({ id: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Lỗi khi thêm thông báo.");
+  }
+});
 
-  const query =
-    "INSERT INTO lich_thi (thong_bao_id, ngay_thi, ca_thi, dia_diem, ghi_chu) VALUES (?, ?, ?, ?, ?)";
-  db.query(
-    query,
-    [thong_bao_id, ngay_thi, ca_thi, dia_diem, ghi_chu],
-    (err) => {
-      if (err) {
-        console.error("Lỗi khi thêm lịch thi:", err);
-        return res.status(500).send("Lỗi khi thêm lịch thi.");
-      }
-
-      res.status(201).json({ message: "Thêm lịch thi thành công." });
-    }
-  );
+app.post("/api/lich-thi", async (req, res) => {
+  const { thong_bao_id, ngay_thi, han_dang_ky, yeu_cau, dia_chi_dang_ky } =
+    req.body;
+  try {
+    await db.execute(
+      "INSERT INTO lich_thi (thong_bao_id, ngay_thi, han_dang_ky, yeu_cau, dia_chi_dang_ky) VALUES (?, ?, ?, ?, ?)",
+      [thong_bao_id, ngay_thi, han_dang_ky, yeu_cau, dia_chi_dang_ky]
+    );
+    res.status(201).send("Lịch thi đã được thêm.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Lỗi khi thêm lịch thi.");
+  }
 });
 
 // API cập nhật lịch thi (Admin)
@@ -465,11 +498,9 @@ app.get("/api/tra-cuu-diem", (req, res) => {
   const { soBaoDanh, maKhoaThi, ngayThi } = req.query;
 
   if (!soBaoDanh || !maKhoaThi || !ngayThi) {
-    return res
-      .status(400)
-      .json({
-        error: "Vui lòng nhập đầy đủ Số báo danh, Mã khóa thi và Ngày thi.",
-      });
+    return res.status(400).json({
+      error: "Vui lòng nhập đầy đủ Số báo danh, Mã khóa thi và Ngày thi.",
+    });
   }
 
   const query = `
@@ -503,6 +534,102 @@ app.get("/api/hoc-phi", (req, res) => {
     }
   });
 });
+
+// ------------------------------------ U S E R --------------------
+
+// API lấy danh sách người dùng
+app.get("/api/users", (req, res) => {
+  const query = "SELECT * FROM users";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Không thể lấy danh sách người dùng",
+      });
+    }
+    res.status(200).json({ success: true, users: results });
+  });
+});
+
+// API xóa người dùng
+app.delete("/api/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const query = "DELETE FROM users WHERE id = ?";
+
+  db.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Không thể xóa người dùng" });
+    }
+    res.status(200).json({ success: true, message: "Người dùng đã được xóa" });
+  });
+});
+
+// API thêm người dùng
+app.post("/api/users", upload.single("avatar"), (req, res) => {
+  const { email, password, full_name, gioi_tinh, ngay_sinh, phone, role } =
+    req.body;
+  const avatar_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const query = `INSERT INTO users (email, password, full_name, gioi_tinh, ngay_sinh, phone, avatar_url, role) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(
+    query,
+    [email, password, full_name, gioi_tinh, ngay_sinh, phone, avatar_url, role],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res
+          .status(500)
+          .json({ success: false, message: "Không thể thêm người dùng" });
+      }
+      res
+        .status(200)
+        .json({ success: true, message: "Người dùng đã được thêm thành công" });
+    }
+  );
+});
+
+const dayjs = require("dayjs");
+
+app.put("/api/users/:id", (req, res) => {
+  const userId = req.params.id;
+  let { email, full_name, gioi_tinh, ngay_sinh, phone, role, password } =
+    req.body;
+
+  // Chuyển đổi định dạng ngày
+  ngay_sinh = dayjs(ngay_sinh).format("YYYY-MM-DD");
+
+  const query = `
+        UPDATE users
+        SET email = ?, full_name = ?, gioi_tinh = ?, ngay_sinh = ?, phone = ?, role = ?, password = ?
+        WHERE id = ?
+    `;
+
+  db.query(
+    query,
+    [email, full_name, gioi_tinh, ngay_sinh, phone, role, password, userId],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          message: "Không thể cập nhật thông tin người dùng",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        message: "Thông tin người dùng đã được cập nhật",
+      });
+    }
+  );
+});
+
 // ----------------------------------------------------------------*----------------------------------------------------------------
 
 app.listen(port, () => {

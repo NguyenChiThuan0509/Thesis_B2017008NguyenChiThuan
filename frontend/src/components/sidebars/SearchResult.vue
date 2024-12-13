@@ -1,6 +1,7 @@
 <template>
+    <button @click="goHome" class="back-button">Về trang chủ</button>
     <div class="search-result">
-        <h1>Tra cứu kết quả thi</h1>
+        <h1>Tra cứu kết quả thi theo cá nhân</h1>
         <form class="form" @submit.prevent="searchResult">
             <div class="form-group">
                 <label for="soBaoDanh">Số báo danh</label>
@@ -106,6 +107,9 @@ export default {
         },
         formatDate(date) {
             return new Date(date).toLocaleDateString("vi-VN");
+        },
+        goHome() {
+            this.$router.push('/');
         }
     }
 };
@@ -197,5 +201,20 @@ export default {
 .error p {
     color: red;
     font-weight: bold;
+}
+
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
 }
 </style>

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "affirm",
+    "pattern": "^(ok|đồng ý|ừ|vâng)$"
+  },
+  {
+    "name": "deny",
+    "pattern": "^(không|không phải|sai)$"
+  }
+]

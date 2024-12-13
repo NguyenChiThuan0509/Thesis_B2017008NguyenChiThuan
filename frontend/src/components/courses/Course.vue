@@ -1,19 +1,25 @@
 <template>
-    <button @click="goToAddClass" class="add-class-button">THÊM</button>
-    <div class="courses-container">
-        <div v-for="course in visibleCourses" :key="course.id" class="course-card">
-            <router-link :to="{ name: 'InCourse', params: { id: course.id } }">
-                <div :class="course.bgClass" class="course-header">
-                    <img src="@/assets/image/course_01.png" alt="khóa học">
+    <div>
+        <!-- Nút "THÊM" chỉ hiển thị khi vai trò là admin -->
+        <button v-if="isAdmin" @click="goToAddClass" class="add-class-button">
+            THÊM
+        </button>
+        <div class="courses-container">
+            <div v-for="course in visibleCourses" :key="course.id" class="course-card">
+                <router-link :to="{ name: 'InCourse', params: { id: course.id } }">
+                    <div :class="course.bgClass" class="course-header">
+                        <img src="@/assets/image/course_01.png" alt="khóa học">
+                    </div>
+                    <div class="course-content">
+                        <h2 class="course-title">{{ course.ten_lop_dao_tao }}</h2>
+                        <p>{{ course.gioi_thieu }}</p>
+                    </div>
+                </router-link>
+                <!-- Các nút "Xóa" và "Sửa" chỉ hiển thị khi vai trò là admin -->
+                <div v-if="isAdmin" class="course-actions">
+                    <button @click="deleteCourse(course.id)">Xóa</button>
+                    <button @click="editCourse(course.id)">Sửa</button>
                 </div>
-                <div class="course-content">
-                    <h2 class="course-title">{{ course.ten_lop_dao_tao }}</h2>
-                    <p>{{ course.gioi_thieu }}</p>
-                </div>
-            </router-link>
-            <div class="course-actions">
-                <button @click="deleteCourse(course.id)">Xóa</button>
-                <button @click="editCourse(course.id)">Sửa</button>
             </div>
         </div>
     </div>
@@ -23,6 +29,7 @@
 import axios from 'axios';
 import AddClass from './AddClass.vue';
 import UpdateClass from './UpdateClass.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: "Course",
@@ -36,17 +43,21 @@ export default {
             maxVisibleCourses: 8,
         };
     },
+    computed: {
+        ...mapGetters(["userRole"]),
+        visibleCourses() {
+            return this.courses.slice(0, this.maxVisibleCourses);
+        },
+        isAdmin() {
+            return this.userRole === "admin";
+        },
+    },
     mounted() {
         this.fetchCourses();
         window.addEventListener('resize', this.updateMaxVisibleCourses);
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.updateMaxVisibleCourses);
-    },
-    computed: {
-        visibleCourses() {
-            return this.courses.slice(0, this.maxVisibleCourses);
-        },
     },
     methods: {
         async fetchCourses() {
@@ -100,7 +111,6 @@ export default {
     margin-bottom: 20px;
     padding: 10px 15px;
     background-color: #08C2FF;
-    /* Màu xanh lá */
     color: black;
     border: none;
     border-radius: 5px;
@@ -111,7 +121,6 @@ export default {
 
 .add-class-button:hover {
     background-color: #006BFF;
-    /* Màu xanh lá đậm hơn khi hover */
 }
 
 .courses-container {
@@ -120,12 +129,13 @@ export default {
     gap: 16px;
     margin-top: 10px;
     padding-bottom: 50px;
+    justify-content: space-between;
 }
 
 .course-card {
-    max-width: calc(25% - 16px);
-    min-height: 200px;
     flex: 1 1 calc(25% - 16px);
+    min-width: 200px;
+    min-height: 250px;
     background-color: #F5F5F5;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -177,31 +187,24 @@ export default {
     transition: background-color 0.3s;
 }
 
-/* Nút "Xóa" màu đỏ */
 .course-actions button:first-of-type {
     background-color: #dc3545;
-    /* Màu đỏ */
     color: white;
 }
 
 .course-actions button:first-of-type:hover {
     background-color: #c82333;
-    /* Màu đỏ đậm hơn khi hover */
 }
 
-/* Nút "Sửa" màu vàng */
 .course-actions button:last-of-type {
     background-color: #ffc107;
-    /* Màu vàng */
     color: black;
 }
 
 .course-actions button:last-of-type:hover {
     background-color: #e0a800;
-    /* Màu vàng đậm hơn khi hover */
 }
 
-/* Media queries */
 @media (max-width: 768px) {
     .course-card {
         flex: 1 1 calc(50% - 16px);

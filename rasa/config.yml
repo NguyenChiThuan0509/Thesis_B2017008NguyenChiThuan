@@ -3,7 +3,7 @@
 recipe: default.v1
 
 # The assistant project unique identifier
-# Replace with a unique assistant name within your deployment
+# This default value must be replaced with a unique assistant name within your deployment
 assistant_id: 20240926-060211-tan-piccolo
 
 # Configuration for Rasa NLU.
@@ -15,6 +15,7 @@ pipeline:
     intent_tokenization_flag: True
     intent_split_symbol: "_"
   - name: RegexFeaturizer
+    use_word_boundaries: False
   - name: LexicalSyntacticFeaturizer
   - name: CountVectorsFeaturizer
     min_ngram: 1
@@ -24,12 +25,12 @@ pipeline:
     min_ngram: 3
     max_ngram: 5
   - name: DIETClassifier
-    epochs: 200
+    epochs: 100
     constrain_similarities: true
-    model_confidence: linear_norm
+    model_confidence: softmax
   - name: EntitySynonymMapper
   - name: FallbackClassifier
-    threshold: 0.3
+    threshold: 0.7
     ambiguity_threshold: 0.1
 
 # Configuration for Rasa Core.
@@ -40,7 +41,7 @@ policies:
   - name: RulePolicy
   - name: TEDPolicy
     max_history: 10
-    epochs: 200
+    epochs: 100
     constrain_similarities: true
   - name: UnexpecTEDIntentPolicy
     max_history: 5

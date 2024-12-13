@@ -1,4 +1,5 @@
 <template>
+    <button @click="goBack" class="back-button">Về trang trước</button>
     <div>
         <h1>{{ announcement.tieu_de }}</h1>
         <div class="table-container">
@@ -61,6 +62,9 @@ export default {
         formatDate(date) {
             return new Date(date).toLocaleDateString("vi-VN");
         },
+        goBack() {
+            this.$router.go(-1); // Sử dụng Vue Router để quay lại trang trước
+        }
     },
 };
 </script>

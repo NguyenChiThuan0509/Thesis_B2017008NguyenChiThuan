@@ -3,52 +3,47 @@ version: "3.1"
 intents:
   - query_func
   - query_tuition
-  - query_class_infor
   - query_address_class
-  - query_exam_schedule
+  - query_exam_class
+  - query_list_exam_class
   - query_fees
-  - query_teacher_infor
   - query_school_schedule
-  - query_number_of_students
   - bot_challenge
   - contact
   - enrollment
-  - deny
-  - feedback
+  - enrollment_check
   - greet
   - goodbye
-  - my_name_and_class
-  - search_degrees
   - test_scores
 
 entities:
   - class_name
   - teacher_name
-  - student_name
+
+regex:
+  course_code: "[A-Z]{2}[0-9]{3}"
 
 slots:
-  class_name:
+  course_name:
     type: text
     influence_conversation: false
     mappings:
       - type: from_text
 
-  teacher_name:
+  course_code:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+
+  date_time:
     type: text
     mappings:
       - type: from_text
 
-  student_name:
-    type: text
-    mappings:
-      - type: from_text
-
-responses: # trả lời mặt định ~ tĩnh
+responses:
   utter_greet:
     - text: "Xin chào, tôi có thể giúp gì cho bạn?"
-
-  utter_did_that_help:
-    - text: "Câu trả lời có giúp ích được cho bạn không?"
 
   utter_goodbye:
     - text: "Tạm biệt, hẹn gặp lại lần sau."
@@ -56,67 +51,34 @@ responses: # trả lời mặt định ~ tĩnh
   utter_iamabot:
     - text: "Tôi là bot, được tạo ra để trả lời các câu hỏi của bạn."
 
-  utter_what_name_and_class:
-    - text: "Bạn có thể xác nhận lại cho tôi biết là bạn tên gì và học lớp nào không? Việc này có thể giúp tìm kiếm kết quả nhanh hơn đó."
-
   utter_contact:
-    - text: "Địa chỉ: Số 01 Lý Tự Trọng, Q. Ninh Kiều, Tp. Cần Thơ, Việt Nam\n\nĐiện thoại: 84 0292 3735 898 - 0982 88 90 90\n\nEmail: webmaster@cit.ctu.edu.vn"
+    - text: |
+        Địa chỉ: Số 01 Lý Tự Trọng, Q. Ninh Kiều, Tp. Cần Thơ, Việt Nam
 
-  utter_tuition:
-    - text: "Chọn loại học phí:"
-      buttons:
-        - title: "Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)"
-          payload: "Học và thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu CB)"
-        - title: "Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)"
-          payload: "Học và thi chứng chỉ Ứng dụng CNTT nâng cao (ký hiệu NC)"
-        - title: "Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)"
-          payload: "Ôn thi chứng chỉ Ứng dụng CNTT cơ bản (ký hiệu ÔN CB)"
+        Điện thoại: 84 0292 3735 898 - 0982 88 90 90
 
-  utter_fees:
-    - text: "Chọn đối tượng:"
-      buttons:
-        - title: "Học viên ghi danh học hoặc ôn tập các lớp tại trung tâm"
-          payload: "/action_fees"
-        - title: "Thí sinh tự do"
-          payload: "/action_fees"
-
-  utter_class:
-    - text: "Có các loại chứng chỉ như sau:"
-      buttons:
-        - title: "Chứng chỉ ứng dụng CNTT cơ bản"
-          payload: "/"
-        - title: "Chứng chỉ ứng dụng CNTT nâng cao"
-          payload: "/"
-        - title: "Lớp đào tạo ngắn hạn, chứng chỉ ngôn ngữ lập trình"
-          payload: "/"
+        Email: webmaster@cit.ctu.edu.vn
 
   utter_func:
     - text: "Tôi có thể hướng dẫn: "
       buttons:
-        - title: "Đăng ký lớp học"
-          payload: "/regis_class"
         - title: "Tra cứu kết quả thi"
-          payload: "/search_results"
-        - title: "Tra cứu văn bằng"
-          payload: "/search_degrees"
+          payload: "/test_scores"
         - title: "Tra cứu lịch thi"
           payload: "/query_exam_schedule"
-        - title: "Tra cứu thông tin lớp"
-          payload: "/query_class_infor"
 
-actions: # trả lời động
+actions:
+  - action_default_fallback
   - action_query_school_schedule
-  - action_query_class_infor
-  - action_query_exam_schedule
-  - action_query_teacher_infor
+  - action_query_exam_class
+  - action_query_list_exam_class
   - action_query_address_class
-  - action_search_degrees
   - action_query_database
-  - action_count_students
   - action_enrollment
   - action_test_scores
   - action_tuition
   - action_fees
+  - action_enrollment_check
 
 session_config:
   session_expiration_time: 60

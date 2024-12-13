@@ -1,4 +1,5 @@
 <template>
+    <button @click="goBack" class="back-button">Về trang chủ</button>
     <div>
         <h1>Thông báo chiêu sinh</h1>
         <div v-for="announcement in announcements" :key="announcement.id" class="card">
@@ -41,6 +42,9 @@ export default {
         goToAnnouncementDetail(id) {
             this.$router.push(`/inaddstudent/${id}`); // Điều hướng với tham số ID
         },
+        goBack() {
+            this.$router.go(-1); // Sử dụng Vue Router để quay lại trang trước
+        }
     },
 };
 </script>
@@ -48,6 +52,7 @@ export default {
 <style>
 h1 {
     margin-bottom: 30px;
+    text-align: center;
     color: black;
     border-bottom: 2px solid #333;
     font-size: 25px;
@@ -73,5 +78,20 @@ h1 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     cursor: pointer;
     /* Con trỏ thành dạng click */
+}
+
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
 }
 </style>

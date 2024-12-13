@@ -1,4 +1,5 @@
 <template>
+    <button @click="goHome" class="back-button">Về trang chủ</button>
     <div>
         <h1 class="title">Trung Tâm Điện Tử & Tin Học - Bộ phận Đào tạo</h1>
         <p>Văn phòng đào tạo chứng chỉ - Khu II – Trường CNTT&TT (Khu Hiệu Bộ cũ) – ĐHCT</p>
@@ -28,7 +29,13 @@
 
 <script>
 export default {
-    name: "Contact"
+    name: "Contact",
+    methods: {
+        // Phương thức chuyển hướng về trang chủ
+        goHome() {
+            this.$router.push('/'); // Dẫn đến trang chủ (home)
+        }
+    }
 };
 </script>
 
@@ -61,5 +68,20 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
 }
 </style>

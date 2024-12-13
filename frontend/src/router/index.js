@@ -1,18 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MainContents from "../components/MainContent.vue";
 import AddStudent from "../components/sidebars/AddStudent.vue";
-import ExamSchedule from "../components/sidebars/ExamSchedule.vue";
-import InExamSchedule from "../components/sidebars/InExamSchedule.vue";
-import SearchResult from "../components/sidebars/SearchResult.vue";
-import SearchDegree from "../components/sidebars/SearchDegree.vue";
-import Teacher from "../components/sidebars/Teacher.vue";
-import Contact from "../components/sidebars/Contact.vue";
-import InCourse from "../components/courses/InCourse.vue";
-import InAddStudent from "../components/sidebars/InAddStudent.vue";
 import AddClass from "../components/courses/AddClass.vue";
-import UpdateClass from "../components/courses/UpdateClass.vue";
+import Contact from "../components/sidebars/Contact.vue";
+import ExamSchedule from "../components/sidebars/ExamSchedule.vue";
+import InCourse from "../components/courses/InCourse.vue";
+import InExamSchedule from "../components/sidebars/InExamSchedule.vue";
+import InAddStudent from "../components/sidebars/InAddStudent.vue";
 import Login from "../components/Login.vue";
+import MainContents from "../components/MainContent.vue";
+import UpdateClass from "../components/courses/UpdateClass.vue";
+import SearchResult from "../components/sidebars/SearchResult.vue";
+import SearchResultClass from "../components/sidebars/SearchResultClass.vue";
+import Teacher from "../components/sidebars/Teacher.vue";
 import Profile from "../components/Profile.vue";
+import ListUser from "../components/ListUser.vue";
+import AddUser from "../components/AddUser.vue";
+import AddExam from "../components/AddExam.vue";
+import NotiExam from "../components/NotiExam.vue";
 
 // Hàm giả để kiểm tra xem người dùng đã đăng nhập hay chưa
 const isAuthenticated = () => {
@@ -29,11 +33,18 @@ const routes = [
   { path: "/", component: MainContents },
   { path: "/examschedule", component: ExamSchedule },
   { path: "/searchresult", component: SearchResult },
-  { path: "/searchdegree", component: SearchDegree },
+  { path: "/searchresultclass", component: SearchResultClass },
   { path: "/teacher", component: Teacher },
   { path: "/contact", component: Contact },
   { path: "/login", name: "Login", component: Login },
   { path: "/addstudent", component: AddStudent },
+  { path: "/listuser", component: ListUser },
+  { path: "/adduser", component: AddUser },
+  { path: "/notiexam", component: NotiExam },
+  {
+    path: "/add-exam",
+    component: AddExam,
+  },
   {
     path: "/profile",
     name: "Profile",

@@ -1,6 +1,13 @@
 version: "3.1"
 
 nlu:
+  - regex: affirm
+    examples: |
+      - ^(ok|đồng ý|ừ|vâng)$
+  - regex: deny
+    examples: |
+      - ^(không|không phải|sai)$
+
   - intent: greet
     examples: |
       - hi
@@ -12,9 +19,6 @@ nlu:
       - good morning
       - good afternoon
       - good evening
-      - có ai ở đây không?
-      - mình có vài câu hỏi
-      - có ai giúp mình không?
 
   - intent: goodbye
     examples: |
@@ -22,23 +26,6 @@ nlu:
       - bye
       - tạm biệt
       - chào tạm biệt
-
-  - intent: feedback
-    examples: |
-      - hay
-      - tuyệt
-      - thanks
-      - thank you
-      - cảm ơn
-      - cảm ơn nhiều
-
-  - intent: deny
-    examples: |
-      - no
-      - sai
-      - sai rồi
-      - không
-      - không phải
 
   - intent: query_func # hỏi chức năng
     examples: |
@@ -53,67 +40,59 @@ nlu:
       - bạn hữu dụng như thế nào?
       - kể cho tôi biết những việc bạn có thể làm được?
 
-  - intent: my_name_and_class
+  - intent: query_school_schedule # hỏi lịch học -> lớp đào tạo -> khai_giang
     examples: |
-      - Tên của tôi là [Nguyễn Chí Thuận](student_name) ,lớp của tôi là [CB522](class_name)
-      - [Nguyễn Chí Thuận](student_name) và [CB522](class_name)
-      - [Nguyễn Chí Thuận](student_name) là tên của tôi, còn [CB522](class_name) là tên lớp của tôi
+      - Lịch học lớp [chứng chỉ ứng dụng CNTT](course_name) [NC439](course_code) là khi nào?
+      - Lớp [chứng chỉ ứng dụng CNTT](course_name) [NC439](course_code) đã kết thúc chưa?
+      - Lớp [chứng chỉ ứng dụng công nghệ thông tin](course_name) [NC439](course_code) đã kết thúc chưa?
+      - Lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [ÔN CB509](course_code) khi nào khai giảng?
+      - Lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [ôn CB509](course_code) khi nào khai giảng?
+      - Khi nào thì lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](course_name) [NC439](course_code) bắt đầu?
+      - Khi nào có lịch học của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [ÔN CB509](course_code)?
+      - Khi nào có lịch học của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [ôn CB509](course_code)?
 
-  - intent: query_class_infor # hỏi thông tin lớp
+  - intent: query_exam_class # hỏi lớp thi vào lúc nào -> lich thi
     examples: |
-      - Có bao nhiêu lớp học?
-      - Có những lớp nào được mở?
-      - Có những khóa nào đang được mở?
-      - Có những lớp chứng chỉ nào?
+      - Lịch thi của lớp [NC43](course_code)?
+      - Lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](course_name) [NC439](course_code) khi nào bắt đầu thi?
+      - Khi nào có lịch thi của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [CB509](course_code)?
+      - Lớp [CB509](course_code) thi vào thời gian nào?
+      - Lịch thi của lớp [CB459](course_code)?
+      - Khi nào lớp [CB459](course_code) thi?
+      - Lớp [NC439](course_code) thi lúc nào?
+      - [CB459](course_code) có lịch thi không?
+      - Khi nào có lịch thi của lớp [CB509](course_code)?
 
-  - intent: query_number_of_students # hỏi số lượng học sinh của lớp học
+  - intent: query_list_exam_class # hỏi danh sách lớp thi vào ngày cụ thể
     examples: |
-      - Lớp [CB522](class_name) có bao nhiêu học sinh?
-      - Lớp [CB522](class_name) có bao nhiêu người?
-      - Cho tôi biết số lượng học sinh trong lớp [CB403](class_name)?
-      - Hãy cho tôi biết số học sinh trong lớp [CB522](class_name)?
-
-  - intent: query_school_schedule # hỏi lịch học
-    examples: |
-      - Lịch học lớp [NC43](class_name) là khi nào?
-      - Lớp [NC43](class_name) đã kết thúc chưa?
-      - Lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name) khi nào khai giảng?
-      - Khi nào thì lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](class_name) bắt đầu?
-      - Khi nào có lịch học của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name)?
-
-  - intent: query_exam_schedule # hỏi lịch thi
-    examples: |
-      - Lịch thi của lớp [NC43](class_name)?
-      - Lớp [Học và thi Chứng chỉ Ứng dụng CNTT nâng cao](class_name) khi nào bắt đầu thi?
-      - Khi nào có lịch thi của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](class_name)?
+      - Danh sách lớp [chứng chỉ ứng dụng CNTT](course_name) thi vào ngày [25/10/2024](date_time)?
+      - Ngày [25/10/2024](date_time) có những lớp [chứng chỉ ứng dụng CNTT](course_name) nào đi thi?
 
   - intent: query_tuition # hỏi học phí
     examples: |
-      - Học phí của lớp Học và thi [Chứng chỉ Ứng dụng CNTT cơ bản](class_name) là bao nhiêu?
-      - Học phí của lớp Học và thi [CB493](class_name) là bao nhiêu?
-      - Học phí của tôi là bao nhiêu nếu học lớp [CB493](class_name)?
-      - Có các loại học phí nào?
+      - Học phí của lớp [Học và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [CB509](course_code) là bao nhiêu?
+      - Học phí của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [ÔN B509](course_code) là bao nhiêu?
+      - Học phí của lớp [Ôn và thi chứng chỉ Ứng dụng CNTT cơ bản](course_name) [ôn B509](course_code) là bao nhiêu?
+      - Học phí của lớp Học và thi [CB493](course_code) là bao nhiêu?
+      - Học phí của tôi là bao nhiêu nếu học lớp [CB493](course_code)?
+      - Trung tâm có các loại học phí nào?
       - Tôi phải đóng bao nhiêu tiền để có thể học được?
       - Tôi có được miễn giảm học phí không?
 
-  - intent: query_fees # hỏi lệ phí thi
+  - intent: query_fees # hỏi lệ phí thi -> le_phi_thi
     examples: |
-      - Lệ phí thi của chứng chỉ ứng dụng công nghệ thông tin là bao nhiêu tiền?
+      - Lệ phí thi của [chứng chỉ ứng dụng công nghệ thông tin](course_name) là bao nhiêu tiền?
       - Tôi phải đóng bao nhiêu lệ phí thi?
       - Có các loại lệ phí thi nào?
       - Nếu tôi là học sinh tự do thì có phải đóng lệ phí thi không?
       - Nếu tôi là học sinh, học viên ghi danh học hoặc ôn tập tại trung tâm thì có phải đóng lệ phí thi không?
 
-  - intent: query_teacher_infor # hỏi thông tin giáo viên
+  - intent: query_address_class # hỏi địa chỉ phòng học -> lop_dao_tao
     examples: |
-      - Giáo viên dạy lớp [NC43](class_name) là ai?
-      - Ai là [giảng viên](teacher_name) của lớp [CB493](class_name)?
-
-  - intent: query_address_class # hỏi địa chỉ phòng học
-    examples: |
-      - lớp [NC43](class_name) học ở đâu vậy?
-      - Chỗ để học lớp [NC43](class_name) là ở đâu?
-      - Địa điểm của lớp [NC43](class_name) ở đâu?
+      - lớp [NC439](course_code) học ở đâu vậy?
+      - lớp [NC439](course_code) học ở địa điểm nào vậy?
+      - Chỗ để học lớp [NC439](course_code) là ở đâu?
+      - Địa điểm của lớp [NC439](course_code) ở đâu?
 
   - intent: enrollment #chiêu sinh
     examples: |
@@ -122,16 +101,19 @@ nlu:
       - Có khóa học mới không?
       - Trung tâm có mở thêm những lớp chứng chỉ nào không?
 
-  - intent: test_scores # tra cứu kết quả thi
+  - intent: enrollment_check # kiểm tra chỉ tiêu chiêu sinh -> chieu_sinh -> chi_tieu
     examples: |
-      - Kết quả thi lớp [CB217](class_name) của tôi như thế nào?
-      - Tôi muốn tra cứu kết quả thi lớp [CB217](class_name) của tôi
-      - Tôi học lớp [CB217](class_name), điểm thi của tôi như thế nào?
+      - Lớp [chứng chỉ ứng dụng CNTT](course_name) có mã lớp [CB509](course_code) còn tuyển sinh không?
+      - Lớp [CB509](course_code) còn tuyển sinh không?
+      - Lớp [chứng chỉ ứng dụng CNTT](course_name) [CB509](course_code) còn tuyển sinh không?
+      - Mã lớp [CB509](course_code) còn tuyển sinh không?
+      - Có tuyển sinh lớp [chứng chỉ ứng dụng CNTT](course_name) [CB509](course_code)
 
-  - intent: search_degrees # tra cứu văn bằng
+  - intent: test_scores # tra cứu kết quả thi -> bang_diem
     examples: |
-      - [Chứng chi tiếng Anh trình độ A](degree_name) của tôi xem bằng cách nào?
-      - Tôi muốn tra cứu thông tin [Chứng chi tiếng Anh trình độ A](degree_name) của tôi
+      - Kết quả thi lớp [CB217](course_code) của tôi như thế nào?
+      - Tôi muốn tra cứu kết quả thi lớp [CB217](course_code) của tôi
+      - Tôi học lớp [CB217](course_code), điểm thi của tôi như thế nào?
 
   - intent: contact
     examples: |

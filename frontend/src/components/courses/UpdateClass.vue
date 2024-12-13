@@ -1,4 +1,5 @@
 <template>
+    <button @click="goBack" class="back-button">Về trang trước</button>
     <div class="update-class-container">
         <h2>Cập Nhật Lớp Học</h2>
         <form @submit.prevent="updateClass">
@@ -84,6 +85,9 @@ export default {
                 alert('Có lỗi xảy ra, vui lòng thử lại.');
             }
         },
+        goBack() {
+            this.$router.go(-1); // Sử dụng Vue Router để quay lại trang trước
+        }
     },
 };
 </script>
@@ -178,5 +182,20 @@ textarea:focus {
     .submit-btn {
         font-size: 1em;
     }
+}
+
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
 }
 </style>

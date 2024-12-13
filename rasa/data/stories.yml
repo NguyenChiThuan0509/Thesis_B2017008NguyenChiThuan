@@ -18,41 +18,30 @@ stories:
       - intent: query_school_schedule
       - action: action_query_school_schedule
 
-  - story: query exam schedule
+  - story: query exam class
     steps:
-      - intent: query_exam_schedule
-      - action: action_query_exam_schedule
+      - intent: query_exam_class
+      - action: action_query_exam_class
+
+  - story: query list exam class
+    steps:
+      - intent: query_list_exam_class
+      - action: action_query_list_exam_class
 
   - story: query tuition
     steps:
       - intent: query_tuition
-      - action: utter_tuition
       - action: action_tuition
 
   - story: query fees
     steps:
       - intent: query_fees
-      - action: utter_fees
-
-  - story: query teachers information
-    steps:
-      - intent: query_teacher_infor
-      - action: action_query_teacher_infor
+      - action: action_fees
 
   - story: query address class
     steps:
       - intent: query_address_class
       - action: action_query_address_class
-
-  - story: query class information
-    steps:
-      - intent: query_class_infor
-      - action: utter_class
-
-  - story: query number of students
-    steps:
-      - intent: query_number_of_students
-      - action: action_count_students
 
   - story: chieu sinh
     steps:
@@ -62,16 +51,14 @@ stories:
   - story: test scores
     steps:
       - intent: test_scores
-      - action: utter_what_name_and_class
-      - intent: my_name_and_class
       - action: action_test_scores
-
-  - story: search degrees
-    steps:
-      - intent: search_degrees
-      - action: action_search_degrees
 
   - story: contact
     steps:
       - intent: contact
       - action: utter_contact
+
+  - story: enrollment check
+    steps:
+      - intent: enrollment_check
+      - action: action_enrollment_check

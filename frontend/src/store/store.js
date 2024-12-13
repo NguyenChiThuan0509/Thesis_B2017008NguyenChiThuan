@@ -58,6 +58,8 @@ const store = createStore({
     user: (state) => state.user,
     // Lấy trạng thái đăng nhập
     isAuthenticated: (state) => state.isAuthenticated,
+    // Lấy vai trò người dùng (nếu có)
+    userRole: (state) => state.user?.role || "guest",
   },
 });
 

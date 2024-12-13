@@ -1,4 +1,5 @@
 <template>
+    <button @click="goBack" class="back-button">Về trang trước</button>
     <div>
         <h1>{{ announcement.tieu_de }}</h1>
         <p>{{ announcement.gioi_thieu }}</p>
@@ -120,12 +121,31 @@ export default {
         formatDate(date) {
             return new Date(date).toLocaleDateString("vi-VN");
         },
+        goBack() {
+            this.$router.go(-1); // Sử dụng Vue Router để quay lại trang trước
+        }
     },
 };
 </script>
 
 
 <style scoped>
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+/* css # */
 h1,
 h2 {
     text-align: center;

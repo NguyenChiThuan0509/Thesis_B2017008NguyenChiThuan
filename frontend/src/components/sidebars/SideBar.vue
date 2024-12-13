@@ -22,29 +22,6 @@
                 </li>
             </router-link>
 
-            <!-- Học Tập (Collapsible) -->
-            <!-- <li>
-                <div @click="toggleMenu('hocTap')">
-                    <span
-                        :class="[isHocTapOpen ? 'open-menu' : '', isActive('/addstudent') || isActive('/examschedule') ? 'active-menu' : '']">
-                        <i class="fa-solid fa-pen-to-square"></i> Học tập
-                    </span>
-                    <i class="icon" :class="isHocTapOpen ? 'rotate' : ''">▼</i>
-                </div>
-                <ul v-if="isHocTapOpen" class="sub-menu">
-                    <router-link to="/addstudent" class="router-link">
-                        <li :class="isActive('/addstudent') ? 'active-submenu' : ''">
-                            <i class="fa-solid fa-plus"></i> Chiêu sinh
-                        </li>
-                    </router-link>
-                    <router-link to="/examschedule" class="router-link">
-                        <li :class="isActive('/examschedule') ? 'active-submenu' : ''">
-                            <i class="fa-solid fa-calendar-days"></i> Lịch thi
-                        </li>
-                    </router-link>
-                </ul>
-            </li> -->
-
             <!-- Tra Cứu (Collapsible) -->
             <li>
                 <div @click="toggleMenu('traCuu')">
@@ -60,8 +37,8 @@
                             <i class="fa-solid fa-address-card"></i> Theo cá nhân
                         </li>
                     </router-link>
-                    <router-link to="/searchdegree" class="router-link">
-                        <li :class="isActive('/searchdegree') ? 'active-submenu' : ''">
+                    <router-link to="/searchresultclass" class="router-link">
+                        <li :class="isActive('/searchresultclass') ? 'active-submenu' : ''">
                             <i class="fa-solid fa-star"></i> Theo lớp
                         </li>
                     </router-link>

@@ -13,15 +13,15 @@
                     </span>
                 </router-link>
             </div>
-            <div class="search-bar">
+            <!-- <div class="search-bar">
                 <input type="text" placeholder="Nhập từ khóa cần tìm kiếm..." />
                 <button>
                     <i class="fa-brands fa-searchengin"></i>
                 </button>
-            </div>
+            </div> -->
             <router-link to="/profile" class="img-profile">
-                <img src="https://png.pngtree.com/png-clipart/20210608/ourmid/pngtree-deep-gray-frame-png-image_3418401.jpg"
-                    alt="Ảnh đại diện">
+                <button class="profile-btn">Trang cá nhân</button>
+
             </router-link>
             <div class="auth-buttons">
 
@@ -129,6 +129,18 @@ export default {
 .search-bar button i {
     font-size: 16px;
     color: #888;
+}
+
+.profile-btn {
+    margin-right: 5px;
+    color: white;
+    background-color: #133e87;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .auth-buttons {

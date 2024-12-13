@@ -1,4 +1,5 @@
 <template>
+    <button @click="goBack" class="back-button">Về trang trước</button>
     <div class="add-class-container">
         <h2>Thêm lớp học</h2>
         <form @submit.prevent="addClass">
@@ -19,8 +20,8 @@
                 <textarea v-model="newClass.noi_dung" placeholder="Nội dung lớp học" required></textarea>
             </div>
             <div class="form-group">
-                <label for="trinh_do">Trình độ:</label>
-                <input type="text" v-model="newClass.trinh_do" placeholder="Trình độ yêu cầu" required />
+                <label for="trinh_do">Cấp độ:</label>
+                <input type="text" v-model="newClass.trinh_do" placeholder="Cấp độ của lớp học" required />
             </div>
             <div class="form-group">
                 <label for="so_buoi">Số buổi:</label>
@@ -68,6 +69,9 @@ export default {
                 alert('Có lỗi xảy ra, vui lòng thử lại.');
             }
         },
+        goBack() {
+            this.$router.go(-1); // Sử dụng Vue Router để quay lại trang trước
+        }
     },
 };
 </script>
@@ -162,5 +166,20 @@ textarea:focus {
     .submit-btn {
         font-size: 1em;
     }
+}
+
+/* css nút quay lại */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
 }
 </style>

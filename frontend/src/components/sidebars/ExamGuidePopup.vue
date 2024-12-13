@@ -4,18 +4,17 @@
             <h2>Phiếu báo dự thi mẫu</h2>
             <p class="center">Trường Đại Học Cần Thơ</p>
             <p class="center">Trung Tâm Điện tử & Tin Học</p>
-            <h3>PHIẾU DỰ THI CHỨNG CHỈ A</h3>
+            <h3>PHIẾU DỰ THI CHỨNG NHẬN ỨNG DỤNG CNTT CƠ BẢN</h3>
             <div class="info">
-                <p><strong>SBD:</strong> 201 (Nhóm 01)</p>
-                <p><strong>Họ và tên:</strong> Nguyễn Văn A</p>
-                <p><strong>Ngày Sinh:</strong> 01/01/1992</p>
-                <p><strong>Nơi Sinh:</strong> Thốt Nốt - Cần Thơ</p>
-                <p><strong>Ngày Thi:</strong> 07/07/2014</p>
+                <p><strong>Số báo danh:</strong> 209 (Nhóm 01)</p>
+                <p><strong>Họ và tên:</strong> Nguyễn Chí Thuận</p>
+                <p><strong>Ngày Sinh:</strong> 05/09/2002</p>
+                <p><strong>Nơi Sinh:</strong> Trần Văn Thời - Cà Mau</p>
+                <p><strong>Ngày Thi:</strong> 29/12/2024</p>
                 <p><strong>Giờ Thi LT:</strong> 09h30 tại Hội trường</p>
-                <p><strong>Giờ Thi TH:</strong> 10h00 tại Phòng 01</p>
-                <p><strong>Khóa Thi:</strong> AWK001</p>
+                <p><strong>Giờ Thi TH:</strong> 10h00 tại Phòng 105</p>
+                <p><strong>Mã khóa Thi:</strong>1224CB509</p>
             </div>
-            <p class="footer">Cần Thơ, ngày 01/07/2014</p>
             <button class="btn btn-secondary" @click="closePopup">Đóng</button>
         </div>
     </div>
@@ -96,14 +95,16 @@ export default {
 
 .info p {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 5px 0;
 }
 
 .info p strong {
     font-weight: bold;
     width: 40%;
-    text-align: right;
+    text-align: left;
+    margin-left: 40px;
+    justify-content: center;
     padding-right: 10px;
 }
 
@@ -125,5 +126,9 @@ export default {
     border: none;
     display: block;
     margin-left: auto;
+}
+
+.btn-secondary:hover {
+    background-color: #c82333;
 }
 </style>
